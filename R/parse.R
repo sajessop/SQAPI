@@ -61,6 +61,7 @@
 #'    # Parse
 #' p1 <- parse(r1, my_params_1)
 #' }
+#'
 #' @export
 parse <- function(response, query_parameters = NULL) {
   template <- if (is.null(query_params)) {

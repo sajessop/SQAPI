@@ -13,9 +13,9 @@
 #'  These are appended to the url inside of the \code{q={}} json string.
 #' @param query_parameters The output from \code{SQAPI::query_params()}. A list of two elements:
 #'   \itemize{
-#'     \item {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
+#'     \item{\code{q}} {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
 #'    These parameters will exist within the \code{q={}} json string in the final url.}
-#'     \item {The second element is A list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
+#'     \item{\code{qparams}} {The second element is a list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
 #'    These parameters will exist outside of the \code{q={}} json string in the final url.}
 #'   }
 #' @param poll Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.

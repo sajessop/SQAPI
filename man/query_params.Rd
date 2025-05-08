@@ -42,9 +42,9 @@ a field of the requested model and direction is either "asc" for ascending order
 \value{
 A list of two elements:
 \itemize{
-\item {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
+\item{\code{q}} {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
 These parameters will exist within the \code{q={}} json string in the final url.}
-\item {The second element is a list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
+\item{\code{qparams}} {The second element is a list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
 These parameters will exist outside of the \code{q={}} json string in the final url.}
 }
 }

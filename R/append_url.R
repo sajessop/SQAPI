@@ -13,9 +13,9 @@
 #'  These are appended to the url inside of the \code{q={}} json string.
 #' @param query_parameters The output from \code{SQAPI::query_params()}. A list of two elements:
 #'   \itemize{
-#'     \item {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
+#'     \item{\code{q}} {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
 #'    These parameters will exist within the \code{q={}} json string in the final url.}
-#'     \item {The second element is A list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
+#'     \item{\code{qparams}} {The second element is a list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
 #'    These parameters will exist outside of the \code{q={}} json string in the final url.}
 #'   }
 #'
@@ -25,41 +25,37 @@ append_url <- function(api,
                        endpoint,
                        query_filters = NULL,
                        query_parameters = NULL) {
+  # Define host and return host + endpoint if there are no query_filters
   host <- api$host
   if (is.null(query_filters)) return(base_url(host, endpoint))
 
   # Wrap filters in a list
   filters <- list(filters = list(query_filters))
 
-  # Initialise q list
-  q <- list()
+  # Directly extract q and qparams from query_parameters
+  q <- query_parameters$q
+  qparams <- query_parameters$qparams
 
-  # Process query parameters
-  if (!is.null(query_parameters[[1]])) {
-    q <- lapply(names(query_parameters[[1]]), function(param) {
-      value <- query_parameters[[1]][[param]]
-      if (!is.null(value)) {
-        switch(param,
-               "order_by" = jsonlite::fromJSON(value, simplifyDataFrame = FALSE),
-               "group_by" = jsonlite::fromJSON(value, simplifyDataFrame = FALSE),
-               value)
+  # Process q
+  processed_q <- list()
+  for (param in names(q)) {
+    value <- q[[param]]
+    if (!is.null(value)) {
+      if (param %in% c("order_by", "group_by")) {
+        processed_q[[param]] <- jsonlite::fromJSON(value, simplifyDataFrame = FALSE)
+      } else {
+        processed_q[[param]] <- value
       }
-    })
-    names(q) <- names(query_parameters[[1]])
-    q <- q[!sapply(q, is.null)]  # Remove NULL values
+    }
   }
 
-  # Combine filters and q, then convert to JSON
-  combined_q_json <- jsonlite::toJSON(c(filters, q), auto_unbox = TRUE)
-
-  # Extract qparams (if they exist)
-  qparams <- if (length(query_parameters) > 1) query_parameters[[2]] else list()
+  # Combine filters and processed_q, convert to JSON
+  combined_q_json <- jsonlite::toJSON(c(filters, processed_q), auto_unbox = TRUE)
 
   # Construct URL
   url <- httr::parse_url(base_url(host, endpoint))
-
-  # Append filters and parameters
   url$query <- c(list(q = combined_q_json), qparams)
 
   return(httr::build_url(url))
 }
+
