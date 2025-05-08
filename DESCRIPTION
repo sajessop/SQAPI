@@ -1,0 +1,21 @@
+Package: SQAPI
+Title: Interaction With SQUIDLE+ API Through R
+Version: 0.0.0.9000
+Authors@R: 
+    person("Sarah", "Jessop", , "jessop.sarah.a@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Builds URLs based on query filters and paramaters. Sends requests to API, including export endpoints with status polling. 
+    Allows easier parsing of results.Handles API authentication.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    getPass,
+    httr,
+    jsonlite,
+    R6,
+    utils
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
