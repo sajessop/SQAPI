@@ -4,8 +4,6 @@
 #' to be passed directly to \code{SQAPI::request()} or \code{SQAPI::export()}. See
 #' "https://squidle.org/api/help?template=api_help_page.html" for details on each parameter.
 #'
-#' @param template Optional character string specifying a response template.
-#' @param disposition Optional character string for the response disposition.
 #' @param include_columns Optional character vector specifying which columns to include in the response.
 #' @param page Optional integer specifying the page number for paginated results.
 #' @param results_per_page Optional integer for the number of results per page.
@@ -18,10 +16,10 @@
 #'
 #' @return A list of two elements:
 #'   \itemize{
-#'     \item{\code{q}} {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
-#'    These parameters will exist within the \code{q={}} json string in the final url.}
-#'     \item{\code{qparams}} {The second element is a list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
-#'    These parameters will exist outside of the \code{q={}} json string in the final url.}
+#'     \item{\code{q}} {A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
+#'       to be encoded as JSON within the \code{q={}} string.}
+#'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
+#'     that appear outside the \code{q={}} string.}
 #'   }
 #'
 #' @examples
@@ -30,7 +28,6 @@
 #'
 #' # Example 2: Using grouping and included columns
 #' query_params(
-#'   template = "data.csv",
 #'   group_by = "pose.dep",
 #'   include_columns = c(
 #'     "id", "key", "path_best", "timestamp_start", "path_best_thm",
@@ -42,15 +39,12 @@
 #'
 #' # Example 3: Ordering results by pose.dep in ascending order
 #' query_params(
-#'   template = "data.csv",
 #'   order_by = c("pose.dep", "asc"),
 #'   include_columns = c("id", "pose.dep")
 #' )
 #'
 #' @export
-query_params <- function(template = NULL,
-                         disposition = NULL,
-                         include_columns = NULL,
+query_params <- function(include_columns = NULL,
                          page = NULL,
                          results_per_page = NULL,
                          limit = NULL,
@@ -85,10 +79,6 @@ query_params <- function(template = NULL,
     if (is.character(group_by)) {
       # If it's a single field (string), make it a list
       group_by <- list(list(field = group_by))
-    } else if (is.character(group_by) && length(group_by) > 1) {
-      # If it's a vector of fields, process each field
-      group_by <- lapply(group_by, function(x)
-        list(field = x))
     } else {
       stop("ERROR: group_by must be a string or a character vector of field names.")
     }
@@ -123,7 +113,7 @@ query_params <- function(template = NULL,
   }
 
   # Add other parameters to the qparams list if not NULL
-  for (param in c("template", "disposition", "page", "results_per_page")) {
+  for (param in c("page", "results_per_page")) {
     if (!is.null(get(param)))
       qparams[[param]] <- get(param)
   }

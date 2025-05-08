@@ -13,18 +13,22 @@
 #'  These are appended to the url inside of the \code{q={}} json string.
 #' @param query_parameters The output from \code{SQAPI::query_params()}. A list of two elements:
 #'   \itemize{
-#'     \item{\code{q}} {The first element is a list of JSON-encoded query parameters (limit, offset, order_by, group_by, single).
-#'    These parameters will exist within the \code{q={}} json string in the final url.}
-#'     \item{\code{qparams}} {The second element is a list of top-level query parameters (template, disposition, include_columns, page, results_per_page).
-#'    These parameters will exist outside of the \code{q={}} json string in the final url.}
+#'     \item{\code{q}} {A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
+#'       to be encoded as JSON within the \code{q={}} string.}
+#'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
+#'     that appear outside the \code{q={}} string.}
 #'   }
+#' @param template Optional character string specifying the output template (e.g., \code{"data.csv"}).
+#' @param disposition Optional character string for specifying the response disposition (e.g., \code{"attachment"} or \code{"inline"}).
 #'
 #' @return A character string representing the full URL encoded to meet the SQUIDLE API requirements.
 #'
 append_url <- function(api,
                        endpoint,
                        query_filters = NULL,
-                       query_parameters = NULL) {
+                       query_parameters = NULL,
+                       template = NULL,
+                       disposition = NULL) {
   # Define host and return host + endpoint if there are no query_filters
   host <- api$host
   if (is.null(query_filters)) return(base_url(host, endpoint))
@@ -35,6 +39,8 @@ append_url <- function(api,
   # Directly extract q and qparams from query_parameters
   q <- query_parameters$q
   qparams <- query_parameters$qparams
+  if (!is.null(template)) qparams$template <- template
+  if (!is.null(disposition)) qparams$disposition <- disposition
 
   # Process q
   processed_q <- list()
