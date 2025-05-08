@@ -1,18 +1,28 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # SQAPI
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SQAPI is to allow user friendly interaction with SQUIDLE+
-API through r.
+The goal of SQAPI is to allow user friendly interaction with SQUIDLE+ API through r.
 
 ## Installation
 
-You can install the development version of SQAPI from
-[GitHub](https://github.com/) with:
+You can install the development version of SQAPI from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -21,16 +31,10 @@ devtools::install_github("sajessop/SQAPI")
 
 ## Example
 
-These are a few basic examples which shows you how to build a url and
-send a request:
+These are a few basic examples which shows you how to build a url and send a request:
 
-``` r
+```{r example}
 library(SQAPI)
-#> 
-#> Attaching package: 'SQAPI'
-#> The following object is masked from 'package:base':
-#> 
-#>     parse
 # # Example 1: Full GET request example
 # # Create instance of SQAPI
 # api <- SQAPI$new()
@@ -104,3 +108,7 @@ library(SQAPI)
 # # Parse
 # p3 <- parse(r3, my_params_3)
 ```
+
+
+
+
