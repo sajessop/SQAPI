@@ -307,8 +307,7 @@ export <- function(api,
   )
   # Early return if poll = FALSE
   if (!poll) {
-    cat("Response Status Code: ", response$status_code)
-    cat("\nConstructed URL: <", utils::URLdecode(url), ">\n")
+    cat("Response Status Code: ", response$status_code, "\n")
     message("Initial response returned without polling. To retrieve the final result, set poll = TRUE.")
     return(response)
   }
