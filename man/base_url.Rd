@@ -15,10 +15,5 @@ base_url(host, endpoint)
 A character string containing the full URL.
 }
 \description{
-Concatenates a host URL and an endpoint string into a single URL.
-}
-\examples{
-base_url("https://squidle.org", "api/media_collection")
-# Returns: "https://squidle.org/api/media_collection"
-
+Internal helper that concatenates a host URL and an endpoint string into a single URL.
 }

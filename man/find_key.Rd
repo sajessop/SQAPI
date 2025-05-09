@@ -15,20 +15,5 @@ find_key(lst, key)
 The value associated with the first occurrence of the key, or \code{NULL} if the key is not found.
 }
 \description{
-Helper function to recursively search a nested list for a key and return the associated value.
-}
-\examples{
-nested_list <- list(
-  a = 1,
-  b = list(
-    c = 2,
-    d = list(
-      e = 3,
-      target = "found me"
-    )
-  )
-)
-find_key(nested_list, "target")
- # Returns: "found me"
-
+Internal helper to recursively search a nested list for a key and return the associated value.
 }

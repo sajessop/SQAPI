@@ -30,7 +30,7 @@
 #'   # Create filters
 #' my_filters <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
 #'   # Create other parameters
-#' my_params <- query_params(page = "14", results_per_page = "56")
+#' my_params <- query_params(page = 14, results_per_page = 56)
 #'   # Append filters and parameters and send request
 #' r <- request("GET", api, "api/annotation", my_filters, my_params)
 #'
