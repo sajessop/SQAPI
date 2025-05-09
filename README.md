@@ -26,81 +26,48 @@ send a request:
 
 ``` r
 library(SQAPI)
-#> 
-#> Attaching package: 'SQAPI'
-#> The following object is masked from 'package:base':
-#> 
-#>     parse
-# # Example 1: Full GET request example
-# # Create instance of SQAPI
 # api <- SQAPI$new()
-# # Create filters
-# my_filters <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
-# # Create other parameters
-# my_params <- query_params(page = "14", results_per_page = "56")
-# # Append filters and parameters and send request
-# r <- request("GET", api, "api/annotation", my_filters, my_params)
-# # Parse response
-# p <- parse(r, my_params)
 # 
-# # Example 2: POST example
-# # Create instance of SQAPI
-# api <- SQAPI$new()
-# # Create named list to POST
-# post_me <- list("name" = "API test 01",
-#                 "description" = "Testing API-created media_collection",
-#                 "user_id" = 007)
-# # Send request with body attached
-# post <- request(
-#   verb = "POST",
-#   api = api,
-#   endpoint = "api/media_collection",
-#   body = post_me
-# )
-# 
-# # Example 3: GET request to export endpoint
-# # Create instance of SQAPI
-# api <- SQAPI$new()
-# # Create filters
-# my_filters_3 <- query_filter(
-#   name = "events",
-#   op = "any",
-#   val = query_filter(name = "id", op = "is_not_null")
-# )
-# # Create other params
-# my_params_3 <- query_params(
-#   template = "data.csv",
-#   group_by = "pose.dep",
-#   include_columns = c(
-#     "id",
-#     "key",
-#     "path_best",
-#     "timestamp_start",
-#     "path_best_thm",
-#     "pose.timestamp",
-#     "pose.lat",
-#     "pose.lon",
-#     "pose.alt",
-#     "pose.dep",
-#     "pose.data",
-#     "pose.id",
-#     "deployment.key",
-#     "deployment.campaign.key",
-#     "deployment.id",
-#     "deployment.campaign.id",
-#     "event_log"
+# # Example 0 - Get all annotation sets from a usergroup with id matching 92
+# {
+#   # Create filters
+#   my_filters <- query_filter(
+#     name = "annotation_set",
+#     op = "has",
+#     val = query_filter(
+#       name = "usergroups",
+#       op = "any",
+#       val = query_filter(name = "id", op = "eq", val = "92")
+#     )
 #   )
-# )
-# # Send request
-# r3 <- export(
-#   api = api,
-#   endpoint = "api/media_collection/13453/export",
-#   query_filters = my_filters_3,
-#   query_parameters = my_params_3,
-#   verb = "GET",
-#   metadata_filename = "my_metadata3.json"
-# )
+#   # Create parameters
+#   # max limit is 200 000, combine limit and offset to download in chunks
+#   my_params <- query_params(limit = 200)
+#   # Send request
+#   # Note: use export() for export endpoints
+#   r <- export(
+#     api = api,
+#     endpoint = "api/annotation/export",
+#     query_filters = my_filters,
+#     query_parameters = my_params
+#   )
+#   # parse
+#   p <- parse_api(r)
+#   
+# }
 # 
-# # Parse
-# p3 <- parse(r3, my_params_3)
+# 
+# # Example 1 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
+# {
+#   # Create filters
+#   my_filters_2 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
+#   # Create other parameters
+#   my_params_2 <- query_params(page = 14, results_per_page = 56)
+#   # Append filters and parameters and send request
+#   # Note: use request() for non export endpoints
+#   r2 <- request("GET", api, "api/annotation", my_filters_2, my_params_2)
+#   # Parse
+#   p2 <- parse_api(r2)
+# 
+# }
 ```
