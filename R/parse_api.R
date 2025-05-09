@@ -53,11 +53,11 @@
 #'   metadata_filename = "my_metadata1.json"
 #' )
 #'    # Parse
-#' p1 <- parse(r1, "data.csv")
+#' p1 <- parse_api(r1, "data.csv")
 #' }
 #'
 #' @export
-parse <- function(response, template = NULL) {
+parse_api <- function(response, template = NULL) {
   template <- if (is.null(template)) "dataframe.json" else template
 
 

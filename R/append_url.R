@@ -18,8 +18,8 @@
 #'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
 #'     that appear outside the \code{q={}} string.}
 #'   }
-#' @param template Optional character string specifying the output template (e.g., \code{"data.csv"}).
-#' @param disposition Optional character string for specifying the response disposition (e.g., \code{"attachment"} or \code{"inline"}).
+#' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
+#' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
 #'
 #' @return A character string representing the full URL encoded to meet the SQUIDLE API requirements.
 #'

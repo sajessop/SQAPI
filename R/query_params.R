@@ -28,7 +28,7 @@
 #'
 #' # Example 2: Using grouping and included columns
 #' query_params(
-#'   group_by = "pose.dep",
+#'   group_by = c("deployment.campaign.id", "deployment.id"),
 #'   include_columns = c(
 #'     "id", "key", "path_best", "timestamp_start", "path_best_thm",
 #'     "pose.timestamp", "pose.lat", "pose.lon", "pose.alt", "pose.dep",
@@ -55,67 +55,42 @@ query_params <- function(include_columns = NULL,
   qparams <- list()
   q <- list()
 
-  # Append to q list (parameters inside the q={} json string)
+  # Validate numeric inputs
+  if (!is.null(page) && !is.numeric(page)) stop("page must be a numeric value.")
+  if (!is.null(results_per_page) && !is.numeric(results_per_page)) stop("results_per_page must be numeric.")
+  if (!is.null(limit) && !is.numeric(limit)) stop("limit must be numeric.")
+  if (!is.null(offset) && !is.numeric(offset)) stop("offset must be numeric.")
 
-  # Handle 'order_by' as a character vector (e.g., c("field1", "asc"))
-  json_order_by <- if (!is.null(order_by)) {
-    # Check if order_by is a character vector with exactly two elements (field and direction)
+  # Handle 'order_by'
+  if (!is.null(order_by)) {
     if (length(order_by) != 2 || !is.character(order_by)) {
-      stop(
-        "ERROR: order_by must be a character vector with exactly 2 elements, e.g., c('<fieldname>', '<order>')"
-      )
+      stop("ERROR: order_by must be a character vector with exactly 2 elements, e.g., c('<fieldname>', '<order>')")
     }
-    order_by <- list(list(field = order_by[1], direction = order_by[2]))
-    jsonlite::toJSON(order_by, auto_unbox = TRUE)
-  } else {
-    NULL
-  }
-  if (!is.null(json_order_by)) {
-    q$order_by <- json_order_by
-  }
-
-  # Handle 'group_by' as a single field or a vector of fields
-  json_group_by <- if (!is.null(group_by)) {
-    if (is.character(group_by)) {
-      # If it's a single field (string), make it a list
-      group_by <- list(list(field = group_by))
-    } else {
-      stop("ERROR: group_by must be a string or a character vector of field names.")
+    if (!order_by[2] %in% c("asc", "desc")) {
+      stop("ERROR: order_by direction must be either 'asc' or 'desc'")
     }
-    jsonlite::toJSON(group_by, auto_unbox = TRUE)
-  } else {
-    NULL
-  }
-  if (!is.null(json_group_by)) {
-    q$group_by <- json_group_by
+    q$order_by <- jsonlite::toJSON(list(list(field = order_by[1], direction = order_by[2])), auto_unbox = TRUE)
   }
 
-  # Handle others
-  if (!is.null(limit)) {
-    q$limit <- limit
-  }
-  if (!is.null(offset)) {
-    q$offset <- offset
-  }
-  if (!is.null(single) && single) {
-    q$single <- TRUE
+  # Handle 'group_by'
+  if (!is.null(group_by)) {
+    if (!is.character(group_by)) {
+      stop("ERROR: group_by must be a character string or a character vector.")
+    }
+    q$group_by <- jsonlite::toJSON(lapply(group_by, function(f) list(field = f)), auto_unbox = TRUE)
   }
 
-  # Append to qparams list (parameters outside the q={} json string)
-  # Handle include columns vector and convert to json
-  json_include_columns <- if (!is.null(include_columns)) {
-    jsonlite::toJSON(include_columns, auto_unbox = TRUE)
-  } else {
-    NULL
-  }
-  if (!is.null(json_include_columns)) {
-    qparams$include_columns <- json_include_columns
-  }
+  # Handle other q params
+  if (!is.null(limit)) q$limit <- limit
+  if (!is.null(offset)) q$offset <- offset
+  if (isTRUE(single)) q$single <- TRUE
 
-  # Add other parameters to the qparams list if not NULL
-  for (param in c("page", "results_per_page")) {
-    if (!is.null(get(param)))
-      qparams[[param]] <- get(param)
+  # Handle qparams (outside q={})
+  if (!is.null(include_columns)) {
+    qparams$include_columns <- jsonlite::toJSON(include_columns, auto_unbox = TRUE)
   }
+  if (!is.null(page)) qparams$page <- page
+  if (!is.null(results_per_page)) qparams$results_per_page <- results_per_page
+
   return(list(q = q, qparams = qparams))
 }

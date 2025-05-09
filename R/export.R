@@ -18,6 +18,8 @@
 #'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
 #'     that appear outside the \code{q={}} string.}
 #'   }
+#' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
+#' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
 #' @param poll Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.
 #' @param write_disk Logical. If \code{TRUE}, writes the result to disk. Defaults to \code{FALSE}.
 #' @param filename A character string specifying the output filename (required if \code{write_disk = TRUE}).
@@ -115,6 +117,18 @@
 #'   query_filters = my_filters_3,
 #'   query_parameters = my_params_3,
 #'   verb = "GET"
+#'
+#'    # Send request and write to disk
+#' r3_write_disk <- export(
+#'  api = api,
+#'   endpoint = "api/media_collection/13453/export",
+#'   query_filters = my_filters_3,
+#'   query_parameters = my_params_3,
+#'   verb = "GET",
+#'   write_disk = TRUE,
+#'   filename = "media_collection_13453.json",
+#'   metadata_filename = "metadata3.json"
+#' )
 #' )
 #'}
 #'
@@ -130,6 +144,15 @@ export <- function(verb,
                    write_disk = FALSE,
                    filename = NULL,
                    metadata_filename = "metadata.json") {
+
+  # Validate input types
+  if (!inherits(api, "SQAPI")) stop("`api` must be an instance of SQAPI.")
+  if (!is.character(endpoint)) stop("`endpoint` must be a character string. See SQUIDLE API documentation for valid endpoints")
+  if (!is.character(verb) || length(verb) != 1) stop("`verb` must be a character string.")
+  verb <- toupper(verb)
+  if (!verb %in% c("GET", "POST", "PUT", "DELETE", "PATCH")) stop("Unsupported HTTP verb: ", verb)
+  if (write_disk && (is.null(filename) || !is.character(filename))) stop("`filename` must be provided and must be a character string if `write_disk = TRUE`.")
+
   # Helper function to make an API request
   make_export_request <- function(url,
                                   verb,
@@ -171,16 +194,6 @@ export <- function(verb,
 
   # Retrieve token
   token <- api$auth
-
-  # Handle filename error
-  if (write_disk && is.null(filename)) {
-    stop("Error: 'write_disk' is TRUE, but 'filename' is not provided.")
-  }
-
-  # Check verb input
-  if (!toupper(verb) %in% c("GET", "POST", "PUT", "DELETE", "PATCH")) {
-    stop("Unsupported HTTP verb: ", verb)
-  }
 
   # Initial request
   response <- make_export_request(url, verb, token, write_disk, filename)
