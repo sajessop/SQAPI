@@ -6,7 +6,7 @@
 #' and \code{SQAPI::query_params}. Typically used as a helper function in \code{SQAPI::request()} and
 #' \code{SQAPI::export()}
 #'
-#' @param api An instance of SQAPI, containing properties `"host"` and `"auth"`.
+#' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
 #' @param endpoint A character string specifying the endpoint. See
 #' "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.
 #' @param query_filters The output from \code{SQAPI::query_filter()}. A named list of filters.

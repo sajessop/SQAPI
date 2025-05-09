@@ -2,16 +2,18 @@
 % Please edit documentation in R/SQAPI.R
 \name{SQAPI}
 \alias{SQAPI}
-\title{Create class "SQAPI" with property "host" and "auth"}
+\title{SQAPI class for interacting with the SQUIDLE API}
 \description{
-Class SQAPI has a host and authorisation.
+Class SQAPI has a host and auth. Designed to be passes to the \code{api}
+field throughout SQAPI functions to handle API authentication.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{host}}{Host url - defaults to "https://squidle.org".}
 
-\item{\code{auth}}{Authorisation for your SQUIDLE API account (your API token).}
+\item{\code{auth}}{Authentication for SQUIDLE API account (your API token).
+Will prompt for token interactively if NULL}
 }
 \if{html}{\out{</div>}}
 }
@@ -26,7 +28,10 @@ Class SQAPI has a host and authorisation.
 \if{html}{\out{<a id="method-SQAPI-new"></a>}}
 \if{latex}{\out{\hypertarget{method-SQAPI-new}{}}}
 \subsection{Method \code{new()}}{
-Creates a new instance of SQAPI that has a host and authorisation.This will handle authorisation of all request to SQUIDLE API in an "r" session.
+Creates a new instance of SQAPI that has a host and auth. Assign it a
+variable name and pass it to the \code{api} field in SQAPI functions such
+as \code{export} and \code{request}. This This will handle authentication
+of all request to SQUIDLE API in an "r" session.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SQAPI$new(host = NULL)}\if{html}{\out{</div>}}
 }

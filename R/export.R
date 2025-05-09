@@ -46,7 +46,7 @@ make_export_request <- function(url,
 #' Internal helper that polls a status URL until the result is ready,
 #' then retrieves the final result from the result URL.
 #'
-#' @param api An instance of SQAPI, containing properties `"host"` and `"auth"`.
+#' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
 #' @param json The parsed JSON response from the initial export request.
 #' @param write_disk Logical; whether to write the result to disk.
 #' @param filename Filename to save the result if write_disk is TRUE.
@@ -133,7 +133,7 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #' and \code{SQAPI::query_params}. It also includes authentication headers. It then initiates the export request, polls
 #' the status url, and returns the result. Metadata headers are also written to a separate file if exporting CSV.
 #'
-#' @param api An instance of SQAPI, containing properties `"host"` and `"auth"`.
+#' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
 #' @param endpoint A character string specifying the endpoint. See
 #' "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.
 #' @param query_filters The output from \code{SQAPI::query_filter()}. A named list of filters.

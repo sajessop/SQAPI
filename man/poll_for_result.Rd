@@ -7,7 +7,7 @@
 poll_for_result(api, json, write_disk, filename)
 }
 \arguments{
-\item{api}{An instance of SQAPI, containing properties \code{"host"} and \code{"auth"}.}
+\item{api}{An instance of \code{SQAPI}, containing properties \code{"host"} and \code{"auth"}.}
 
 \item{json}{The parsed JSON response from the initial export request.}
 

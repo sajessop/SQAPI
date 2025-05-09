@@ -1,12 +1,11 @@
 #' Make a Request to SQUIDLE API
 #'
-#' Sends an HTTP request (e.g., GET, POST, PATCH) to a specified SQUIDLE API endpoint.
-#' It constructs the request URL with query filters and query parameters directly from the output of \code{SQAPI::query_filter()}
-#' and \code{SQAPI::query_params}. It also includes authentication headers.
-#' It returns the full response object.
+#' Sends an HTTP request (e.g., GET, POST, PATCH, DELETE) to a specified SQUIDLE API endpoint.
+#' Constructs the request URL with query filters and query parameters directly from the output of \code{SQAPI::query_filter()}
+#' and \code{SQAPI::query_params}. Also includes authentication headers.
 #'
 #' @param verb A character string specifying the HTTP verb to use (e.g., `"GET"`, `"POST"`, `"PATCH"`, `"DELETE"`).
-#' @param api An instance of SQAPI, containing properties `"host"` and `"auth"`.
+#' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
 #' @param endpoint A character string specifying the endpoint. See
 #' "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.
 #' @param query_filters The output from \code{SQAPI::query_filter()}. A named list of filters.
@@ -40,12 +39,24 @@
 #'   # Create named list to POST
 #' post_me <- list(
 #'   "name" = "API test 01",
-#'   "description" = "Testing API-created media_collection",
-#'   "user_id"= 007
+#'   "description" = "Testing API-created media_collection"
 #' )
 #'   # Send request with body attached
 #' post <- request(verb = "POST", api = api, endpoint = "api/media_collection", body = post_me)
 #'
+#' # Example 3: PATCH example
+#'   # TIP: Test your search query (q) on a GET request first to see what is returned before updating.
+#' patch_me <- list(
+#' "name" = "API test 02",
+#' "description" = "Testing API- media_collection"
+#' )
+#'   # ID of item to patch is in endpoint (See SQUIDLE API documentation for more examples)
+#' patch <- request("PATCH", api, "api/media_collection/14125", body = patch_me)
+#'
+#' # Example 4: DELETE example
+#'   # TIP: Test your search query (q) on a GET request first to see what is returned before updating.
+#'   # ID of item to patch is in endpoint (See SQUIDLE API documentation for more examples)
+#' patch <- request("DELETE", api, "api/media_collection/14125")
 #' @export
 request <- function(verb,
                     api,

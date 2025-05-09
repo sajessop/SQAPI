@@ -18,7 +18,7 @@ export(
 )
 }
 \arguments{
-\item{api}{An instance of SQAPI, containing properties \code{"host"} and \code{"auth"}.}
+\item{api}{An instance of \code{SQAPI}, containing properties \code{"host"} and \code{"auth"}.}
 
 \item{endpoint}{A character string specifying the endpoint. See
 "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.}
