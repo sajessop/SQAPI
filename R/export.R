@@ -1,11 +1,10 @@
-#' Make a Request to SQUIDLE API Export Endpoint
+#' Make a GET Request to SQUIDLE API Export Endpoint
 #'
-#' Sends an HTTP request to a specified SQUIDLE API export endpoint, with option for status polling and file write to disk.
+#' Sends a GET request to a specified SQUIDLE API export endpoint, with option for status polling and file write to disk.
 #' It constructs the request URL with query filters and query parameters directly from the output of \code{SQAPI::query_filter()}
 #' and \code{SQAPI::query_params}. It also includes authentication headers. It then initiates the export request, polls
 #' the status url, and returns the result. Metadata headers are also written to a separate file if exporting CSV.
 #'
-#' @param verb A character string specifying the HTTP verb to use (`"GET"`).
 #' @param api An instance of SQAPI, containing properties `"host"` and `"auth"`.
 #' @param endpoint A character string specifying the endpoint. See
 #' "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.
@@ -20,6 +19,7 @@
 #'   }
 #' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
 #' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
+#' See SQUIDLE API documentation for details on template and disposition.
 #' @param poll Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.
 #' @param write_disk Logical. If \code{TRUE}, writes the result to disk. Defaults to \code{FALSE}.
 #' @param filename A character string specifying the output filename (required if \code{write_disk = TRUE}).
@@ -65,7 +65,6 @@
 #'   endpoint = "api/media_collection/13453/export",
 #'   query_filters = my_filters_1,
 #'   query_parameters = my_params_1,
-#'   verb = "GET",
 #'   metadata_filename = "my_metadata1.json"
 #' )
 #'
@@ -86,8 +85,7 @@
 #'   api = api,
 #'   endpoint = "api/media_collection/13453/export",
 #'   query_filters = my_filters_2,
-#'   query_parameters = my_params_2,
-#'   verb = "GET"
+#'   query_parameters = my_params_2
 #' )
 #'
 #' # Example 3 - Export ordered data as .csv
@@ -115,8 +113,7 @@
 #'   api = api,
 #'   endpoint = "api/media_collection/13453/export",
 #'   query_filters = my_filters_3,
-#'   query_parameters = my_params_3,
-#'   verb = "GET"
+#'   query_parameters = my_params_3)
 #'
 #'    # Send request and write to disk
 #' r3_write_disk <- export(
@@ -124,7 +121,6 @@
 #'   endpoint = "api/media_collection/13453/export",
 #'   query_filters = my_filters_3,
 #'   query_parameters = my_params_3,
-#'   verb = "GET",
 #'   write_disk = TRUE,
 #'   filename = "media_collection_13453.json",
 #'   metadata_filename = "metadata3.json"
@@ -133,8 +129,7 @@
 #'}
 #'
 #' @export
-export <- function(verb,
-                   api,
+export <- function(api,
                    endpoint,
                    query_filters = NULL,
                    query_parameters = NULL,
@@ -148,37 +143,7 @@ export <- function(verb,
   # Validate input types
   if (!inherits(api, "SQAPI")) stop("`api` must be an instance of SQAPI.")
   if (!is.character(endpoint)) stop("`endpoint` must be a character string. See SQUIDLE API documentation for valid endpoints")
-  if (!is.character(verb) || length(verb) != 1) stop("`verb` must be a character string.")
-  verb <- toupper(verb)
-  if (!verb %in% c("GET", "POST", "PUT", "DELETE", "PATCH")) stop("Unsupported HTTP verb: ", verb)
   if (write_disk && (is.null(filename) || !is.character(filename))) stop("`filename` must be provided and must be a character string if `write_disk = TRUE`.")
-
-  # Helper function to make an API request
-  make_export_request <- function(url,
-                                  verb,
-                                  token,
-                                  write_to_disk = FALSE,
-                                  file = NULL) {
-    if (write_to_disk) {
-      return(
-        httr::VERB(
-          verb = verb,
-          url = url,
-          config = httr::add_headers("x-auth-token" =  token),
-          httr::write_disk(file, overwrite = TRUE)
-        )
-      )
-    } else {
-      return(
-        httr::VERB(
-          verb = verb,
-          url = url,
-          config = httr::add_headers("x-auth-token" =  token),
-          httr::write_memory()
-        )
-      )
-    }
-  }
 
   # Construct and print URL
   url <- append_url(
@@ -189,14 +154,13 @@ export <- function(verb,
     template = template,
     disposition = disposition
   )
-  cat("Constructed URL: ")
-  cat(utils::URLdecode(url), "\n")
+  cat("Constructed URL: <", utils::URLdecode(url), ">\n")
 
   # Retrieve token
   token <- api$auth
 
   # Initial request
-  response <- make_export_request(url, verb, token, write_disk, filename)
+  response <- make_export_request(url, token, write_disk, filename)
 
   # Extract JSON response
   json <- jsonlite::fromJSON(
@@ -204,88 +168,17 @@ export <- function(verb,
     simplifyVector = TRUE,
     flatten = TRUE
   )
-
-  if (poll) {
-    # Polling
-    results_response <- NULL
-
-    # Define URLs
-    host <- paste(api$host)
-    status_url <- paste0(host, json$status_url)
-    result_url <- paste0(host, json$result_url)
-
-    print(json$message)
-    print(paste0("Status URL: ", status_url))
-    print(paste0("Results URL: ", result_url))
-
-    # Progress Bar
-    pbar <- utils::txtProgressBar(min = 0,
-                           max = 100,
-                           style = 3)
-
-    while (TRUE) {
-      # Check status
-      status_response <- httr::VERB(
-        verb = verb,
-        url = status_url,
-        config = httr::add_headers("x-auth-token" =  token)
-      )
-
-      json_status_response <- jsonlite::fromJSON(
-        httr::content(status_response, 'text', encoding = "UTF-8"),
-        simplifyVector = TRUE,
-        flatten = TRUE
-      )
-
-      # If the result is ready
-      if (json_status_response$result_available ||
-          json_status_response$status == "done") {
-        # Call helper function to handle the write_disk logic and make request to result url
-        results_response <- make_export_request(
-          url = result_url,
-          verb = verb,
-          token = token,
-          write_to_disk = write_disk,
-          file = filename
-        )
-
-        utils::setTxtProgressBar(pbar, 100)  # Set progress to 100% when done
-        break
-      } else if (json_status_response$status == "error") {
-        close(pbar)
-        stop("Error in processing the request.")
-      }
-
-      # Calculate progress
-      stages <- json_status_response$progress
-      total_iterations <- sum(sapply(stages, function(stage)
-        if (!is.null(stage$iteration_count))
-          stage$iteration_count
-        else
-          0))
-      completed_iterations <- sum(sapply(stages, function(stage)
-        if (!is.null(stage$iteration))
-          stage$iteration
-        else
-          0))
-
-      overall_progress <- if (total_iterations > 0)
-        (completed_iterations / total_iterations) * 100
-      else
-        0
-      utils::setTxtProgressBar(pbar, overall_progress)
-
-      Sys.sleep(1)  # Avoid excessive polling
-    }
-
-    close(pbar)
-
-    # Retrieve final response
-    ret_results <- results_response
-  } else {
-    ret_results <- response
+  # Early return if poll = FALSE
+  if (!poll) {
+    message("Response Status Code: ", response$status_code)
+    message("Constructed URL: <", utils::URLdecode(url), ">")
+    return(response)
   }
-
+  # else, continue with polling logic
+  else {
+    # Call polling helper function
+    ret_results <- poll_for_result(api = api, json = json, write_disk = write_disk, filename = filename)
+  }
 
   # Handle metadata if it's a CSV file
   if (grepl("data.csv|dataframe.csv", url)) {
@@ -298,21 +191,21 @@ export <- function(verb,
     } else {
       paste(safe_endpoint, metadata_filename, sep = "_")
     }
-
+    # Retrieve metadata from headers
     meta <- ret_results$headers$`x-content-metadata`
     if (!is.null(meta)) {
       writeLines(meta, metadata_filename)
-      cat("See metadata file: ", metadata_filename, "\n")
+      message("See metadata file: ", metadata_filename)
     }
   }
 
   # Print file write details
   if (write_disk) {
-    cat("File downloaded to:", filename, "\n")
+    message("File downloaded to:", filename)
   }
 
 
-  cat("\nResponse Status Code: ", response$status_code, "\n")
+  cat("\nResponse Status Code: ", response$status_code)
   return(ret_results)
 }
 

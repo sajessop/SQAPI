@@ -30,9 +30,9 @@ to be encoded as JSON within the \code{q={}} string.}
 that appear outside the \code{q={}} string.}
 }}
 
-\item{template}{Optional character string specifying the output template (e.g., \code{"data.csv"}).}
+\item{template}{Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.}
 
-\item{disposition}{Optional character string for specifying the response disposition (e.g., \code{"attachment"} or \code{"inline"}).}
+\item{disposition}{Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.}
 }
 \value{
 A character string representing the full URL encoded to meet the SQUIDLE API requirements.

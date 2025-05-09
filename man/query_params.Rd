@@ -53,7 +53,7 @@ query_params(page = 14, results_per_page = 56)
 
 # Example 2: Using grouping and included columns
 query_params(
-  group_by = "pose.dep",
+  group_by = c("deployment.campaign.id", "deployment.id"),
   include_columns = c(
     "id", "key", "path_best", "timestamp_start", "path_best_thm",
     "pose.timestamp", "pose.lat", "pose.lon", "pose.alt", "pose.dep",

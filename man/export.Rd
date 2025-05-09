@@ -2,10 +2,9 @@
 % Please edit documentation in R/export.R
 \name{export}
 \alias{export}
-\title{Make a Request to SQUIDLE API Export Endpoint}
+\title{Make a GET Request to SQUIDLE API Export Endpoint}
 \usage{
 export(
-  verb,
   api,
   endpoint,
   query_filters = NULL,
@@ -19,8 +18,6 @@ export(
 )
 }
 \arguments{
-\item{verb}{A character string specifying the HTTP verb to use (\code{"GET"}).}
-
 \item{api}{An instance of SQAPI, containing properties \code{"host"} and \code{"auth"}.}
 
 \item{endpoint}{A character string specifying the endpoint. See
@@ -37,6 +34,11 @@ to be encoded as JSON within the \code{q={}} string.}
 that appear outside the \code{q={}} string.}
 }}
 
+\item{template}{Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.}
+
+\item{disposition}{Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
+See SQUIDLE API documentation for details on template and disposition.}
+
 \item{poll}{Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.}
 
 \item{write_disk}{Logical. If \code{TRUE}, writes the result to disk. Defaults to \code{FALSE}.}
@@ -50,7 +52,7 @@ Only used if a CSV is being downloaded. Defaults to \code{"metadata.json"}.}
 An \code{httr::response} object containing the response from SQUIDLE.
 }
 \description{
-Sends an HTTP request to a specified SQUIDLE API export endpoint, with option for status polling and file write to disk.
+Sends a GET request to a specified SQUIDLE API export endpoint, with option for status polling and file write to disk.
 It constructs the request URL with query filters and query parameters directly from the output of \code{SQAPI::query_filter()}
 and \code{SQAPI::query_params}. It also includes authentication headers. It then initiates the export request, polls
 the status url, and returns the result. Metadata headers are also written to a separate file if exporting CSV.
@@ -92,7 +94,6 @@ r1 <- export(
   endpoint = "api/media_collection/13453/export",
   query_filters = my_filters_1,
   query_parameters = my_params_1,
-  verb = "GET",
   metadata_filename = "my_metadata1.json"
 )
 
@@ -113,8 +114,7 @@ r2 <- export(
   api = api,
   endpoint = "api/media_collection/13453/export",
   query_filters = my_filters_2,
-  query_parameters = my_params_2,
-  verb = "GET"
+  query_parameters = my_params_2
 )
 
 # Example 3 - Export ordered data as .csv
@@ -142,8 +142,18 @@ r3 <- export(
   api = api,
   endpoint = "api/media_collection/13453/export",
   query_filters = my_filters_3,
+  query_parameters = my_params_3)
+
+   # Send request and write to disk
+r3_write_disk <- export(
+ api = api,
+  endpoint = "api/media_collection/13453/export",
+  query_filters = my_filters_3,
   query_parameters = my_params_3,
-  verb = "GET"
+  write_disk = TRUE,
+  filename = "media_collection_13453.json",
+  metadata_filename = "metadata3.json"
+)
 )
 }
 
