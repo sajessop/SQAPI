@@ -29,3 +29,4 @@ write the result to disk or return the content in memory, based on the provided 
 This function is used internally within other functions (specifically export) to make API requests. It is flexible in how it handles
 the response, allowing either a file save to disk or in-memory storage for further processing.
 }
+\keyword{internal}

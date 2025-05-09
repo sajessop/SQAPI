@@ -30,7 +30,7 @@ Will prompt for token interactively if NULL}
 \subsection{Method \code{new()}}{
 Creates a new instance of SQAPI that has a host and auth. Assign it a
 variable name and pass it to the \code{api} field in SQAPI functions such
-as \code{export} and \code{request}. This This will handle authentication
+as \code{export} and \code{request}. This will handle authentication
 of all request to SQUIDLE API in an "r" session.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SQAPI$new(host = NULL)}\if{html}{\out{</div>}}

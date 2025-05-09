@@ -49,7 +49,8 @@ See SQUIDLE API documentation for details on template and disposition.}
 Only used if a CSV is being downloaded. Defaults to \code{"metadata.json"}.}
 }
 \value{
-An \code{httr::response} object containing the response from SQUIDLE.
+If \code{poll = TRUE}, returns the final \code{httr::response} from the result url after polling the status url.
+If \code{poll = FALSE}, returns the initial \code{httr::response} from the export request without polling the status url.
 }
 \description{
 Sends a GET request to a specified SQUIDLE API export endpoint, with option for status polling and file write to disk.
@@ -60,7 +61,9 @@ the status url, and returns the result. Metadata headers are also written to a s
 \details{
 This function is used to export datasets from SQUIDLE API export endpoints. When \code{poll = TRUE},
 it will repeatedly check the status url until the export is complete, displaying
-a progress bar in the console.
+a progress bar in the console. If \code{poll = FALSE}, the function returns immediately after the initial
+request without checking the status or downloading the result.
+This is useful for inspecting or debugging the initial export response manually.
 
 If \code{write_disk = TRUE}, the response will be saved to the specified file, and optionally
 metadata can be saved separately. If a CSV file is exported, relevant metadata from headers
@@ -153,7 +156,6 @@ r3_write_disk <- export(
   write_disk = TRUE,
   filename = "media_collection_13453.json",
   metadata_filename = "metadata3.json"
-)
 )
 }
 

@@ -17,6 +17,8 @@
 #' This function is used internally within other functions (specifically export) to make API requests. It is flexible in how it handles
 #' the response, allowing either a file save to disk or in-memory storage for further processing.
 #'
+#' @keywords internal
+#'
 make_export_request <- function(url,
                                 token,
                                 write_to_disk = FALSE,
@@ -52,6 +54,9 @@ make_export_request <- function(url,
 #' @param filename Filename to save the result if write_disk is TRUE.
 #'
 #' @return An httr::response object.
+#'
+#' @keywords internal
+#'
 poll_for_result <- function(api, json, write_disk, filename) {
   # Retrieve auth and host from api
   token <- api$auth
@@ -154,12 +159,17 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #' @param metadata_filename A character string specifying the name of the file to save metadata headers to.
 #' Only used if a CSV is being downloaded. Defaults to \code{"metadata.json"}.
 #'
-#' @return An \code{httr::response} object containing the response from SQUIDLE.
+#' @return
+#' If \code{poll = TRUE}, returns the final \code{httr::response} from the result url after polling the status url.
+#' If \code{poll = FALSE}, returns the initial \code{httr::response} from the export request without polling the status url.
 #'
 #' @details
 #' This function is used to export datasets from SQUIDLE API export endpoints. When \code{poll = TRUE},
 #' it will repeatedly check the status url until the export is complete, displaying
-#' a progress bar in the console.
+#' a progress bar in the console. If \code{poll = FALSE}, the function returns immediately after the initial
+#' request without checking the status or downloading the result.
+#' This is useful for inspecting or debugging the initial export response manually.
+
 #'
 #' If \code{write_disk = TRUE}, the response will be saved to the specified file, and optionally
 #' metadata can be saved separately. If a CSV file is exported, relevant metadata from headers
@@ -253,7 +263,6 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #'   filename = "media_collection_13453.json",
 #'   metadata_filename = "metadata3.json"
 #' )
-#' )
 #'}
 #'
 #' @export
@@ -298,8 +307,9 @@ export <- function(api,
   )
   # Early return if poll = FALSE
   if (!poll) {
-    message("Response Status Code: ", response$status_code)
-    message("Constructed URL: <", utils::URLdecode(url), ">")
+    cat("Response Status Code: ", response$status_code)
+    cat("\nConstructed URL: <", utils::URLdecode(url), ">\n")
+    message("Initial response returned without polling. To retrieve the final result, set poll = TRUE.")
     return(response)
   }
   # else, continue with polling logic

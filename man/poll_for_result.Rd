@@ -22,3 +22,4 @@ An httr::response object.
 Internal helper that polls a status URL until the result is ready,
 then retrieves the final result from the result URL.
 }
+\keyword{internal}
