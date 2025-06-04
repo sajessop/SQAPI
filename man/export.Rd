@@ -70,7 +70,8 @@ metadata can be saved separately. If a CSV file is exported, relevant metadata f
 will be extracted and saved.
 }
 \examples{
-\dontrun{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
 # Example 1 - Export data as .csv with metadata
    # Create instance of SQAPI
 api <- SQAPI$new()
@@ -157,6 +158,5 @@ r3_write_disk <- export(
   filename = "media_collection_13453.json",
   metadata_filename = "metadata3.json"
 )
-}
-
+\dontshow{\}) # examplesIf}
 }

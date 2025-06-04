@@ -44,6 +44,8 @@ Constructs the request URL with query filters and query parameters directly from
 and \code{SQAPI::query_params}. Also includes authentication headers.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
 # Example 1: Full GET request example
   # Create instance of SQAPI
 api <- SQAPI$new()
@@ -78,4 +80,5 @@ patch <- request("PATCH", api, "api/media_collection/14125", body = patch_me)
   # TIP: Test your search query (q) on a GET request first to see what is returned before updating.
   # ID of item to patch is in endpoint (See SQUIDLE API documentation for more examples)
 patch <- request("DELETE", api, "api/media_collection/14125")
+\dontshow{\}) # examplesIf}
 }

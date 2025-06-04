@@ -138,18 +138,7 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #' and \code{SQAPI::query_params}. It also includes authentication headers. It then initiates the export request, polls
 #' the status url, and returns the result. Metadata headers are also written to a separate file if exporting CSV.
 #'
-#' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
-#' @param endpoint A character string specifying the endpoint. See
-#' "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.
-#' @param query_filters The output from \code{SQAPI::query_filter()}. A named list of filters.
-#'  These are appended to the url inside of the \code{q={}} json string.
-#' @param query_parameters The output from \code{SQAPI::query_params()}. A list of two elements:
-#'   \itemize{
-#'     \item{\code{q}} {A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
-#'       to be encoded as JSON within the \code{q={}} string.}
-#'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
-#'     that appear outside the \code{q={}} string.}
-#'   }
+#' @inheritParams request
 #' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
 #' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
 #' See SQUIDLE API documentation for details on template and disposition.
@@ -175,8 +164,8 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #' metadata can be saved separately. If a CSV file is exported, relevant metadata from headers
 #' will be extracted and saved.
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf interactive()
+#'
 #' # Example 1 - Export data as .csv with metadata
 #'    # Create instance of SQAPI
 #' api <- SQAPI$new()
@@ -263,7 +252,6 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #'   filename = "media_collection_13453.json",
 #'   metadata_filename = "metadata3.json"
 #' )
-#'}
 #'
 #' @export
 export <- function(api,

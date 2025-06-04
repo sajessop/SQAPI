@@ -22,7 +22,8 @@
 #'
 #' @return An \code{httr::response} object containing the response from SQUIDLE.
 #'
-#' @examples
+#' @examplesIf interactive()
+#'
 #' # Example 1: Full GET request example
 #'   # Create instance of SQAPI
 #' api <- SQAPI$new()

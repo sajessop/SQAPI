@@ -26,8 +26,8 @@ These are a few basic examples which shows you how to build a url and
 send a request:
 
 ``` r
-library(SQAPI)
 if (interactive()){
+library(SQAPI)
 api <- SQAPI$new()
 # Example 0 - Get all annotation sets from a usergroup with id matching 92
 {
