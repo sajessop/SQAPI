@@ -35,8 +35,8 @@ These are a few basic examples which shows you how to build a url and send a req
 
 ```{r example}
 library(SQAPI)
+if (interactive()){
 api <- SQAPI$new()
-
 # Example 0 - Get all annotation sets from a usergroup with id matching 92
 {
   # Create filters
@@ -62,7 +62,7 @@ api <- SQAPI$new()
   )
   # parse
   p <- parse_api(r)
-  
+
 }
 
 
@@ -78,6 +78,7 @@ api <- SQAPI$new()
   # Parse
   p2 <- parse_api(r2)
 
+}
 }
 ```
 

@@ -4,6 +4,7 @@
 # SQAPI
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of SQAPI is to allow user friendly interaction with SQUIDLE+
@@ -26,48 +27,49 @@ send a request:
 
 ``` r
 library(SQAPI)
-# api <- SQAPI$new()
-# 
-# # Example 0 - Get all annotation sets from a usergroup with id matching 92
-# {
-#   # Create filters
-#   my_filters <- query_filter(
-#     name = "annotation_set",
-#     op = "has",
-#     val = query_filter(
-#       name = "usergroups",
-#       op = "any",
-#       val = query_filter(name = "id", op = "eq", val = "92")
-#     )
-#   )
-#   # Create parameters
-#   # max limit is 200 000, combine limit and offset to download in chunks
-#   my_params <- query_params(limit = 200)
-#   # Send request
-#   # Note: use export() for export endpoints
-#   r <- export(
-#     api = api,
-#     endpoint = "api/annotation/export",
-#     query_filters = my_filters,
-#     query_parameters = my_params
-#   )
-#   # parse
-#   p <- parse_api(r)
-#   
-# }
-# 
-# 
-# # Example 1 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
-# {
-#   # Create filters
-#   my_filters_2 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
-#   # Create other parameters
-#   my_params_2 <- query_params(page = 14, results_per_page = 56)
-#   # Append filters and parameters and send request
-#   # Note: use request() for non export endpoints
-#   r2 <- request("GET", api, "api/annotation", my_filters_2, my_params_2)
-#   # Parse
-#   p2 <- parse_api(r2)
-# 
-# }
+if (interactive()){
+api <- SQAPI$new()
+# Example 0 - Get all annotation sets from a usergroup with id matching 92
+{
+  # Create filters
+  my_filters <- query_filter(
+    name = "annotation_set",
+    op = "has",
+    val = query_filter(
+      name = "usergroups",
+      op = "any",
+      val = query_filter(name = "id", op = "eq", val = "92")
+    )
+  )
+  # Create parameters
+  # max limit is 200 000, combine limit and offset to download in chunks
+  my_params <- query_params(limit = 200)
+  # Send request
+  # Note: use export() for export endpoints
+  r <- export(
+    api = api,
+    endpoint = "api/annotation/export",
+    query_filters = my_filters,
+    query_parameters = my_params
+  )
+  # parse
+  p <- parse_api(r)
+
+}
+
+
+# Example 1 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
+{
+  # Create filters
+  my_filters_2 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
+  # Create other parameters
+  my_params_2 <- query_params(page = 14, results_per_page = 56)
+  # Append filters and parameters and send request
+  # Note: use request() for non export endpoints
+  r2 <- request("GET", api, "api/annotation", my_filters_2, my_params_2)
+  # Parse
+  p2 <- parse_api(r2)
+
+}
+}
 ```
