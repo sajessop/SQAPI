@@ -65,6 +65,23 @@ api <- SQAPI$new()
 
 }
 
+# Example 1 - Get a list of deployments within a polygon defined by lat long coords
+  # Define polygon
+  polygon <- list(
+  list(lat = -38.8, lon = 145.0),
+  list(lat = -38.8, lon = 149.5),
+  list(lat = -40.2, lon = 149.5),
+  list(lat = -40.2, lon = 145.0),
+  list(lat = -38.8, lon = 145.0)
+)
+  # Create filters
+  my_filters1 <- query_filter("geom_start", "geo_in_poly", polygon)
+  
+  # Send request (using "request" for non-export endpoint)
+  r1 <- request("GET", api, "api/deployment", my_filters)
+  
+  #parse
+  p1 <- parse_api(r)
 
 # Example 1 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
 {
