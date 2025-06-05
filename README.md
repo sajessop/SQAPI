@@ -55,6 +55,11 @@ api <- SQAPI$new()
   # parse
   p <- parse_api(r)
 
+  
+  # Check if needs review...
+  another_filter <- query_filter(name = "needs_review", op = "eq", val = "True")
+  second_request <- export(api, "api/annotation/export", query_filters = list(my_filters, another_filter), query_parameters = my_params)
+  # Note: you can add more filters by passing a list of your query filters
 }
 
 # Example 1 - Get a list of deployments within a polygon defined by lat long coords
@@ -74,18 +79,29 @@ api <- SQAPI$new()
   
   #parse
   p1 <- parse_api(r)
+  
+# Example 2 get a list of annotation sets matching a specified id and check if they are real science
+  
+  # Create filters
+  my_filters2 <- query_filter(name = "id", op = "eq", val = "5432")
+  another_filter2 <- query_filter(name = "is_real_science", op = "eq", val = "true")
+  
+  # Send request
+  r2 <- request(api = api, endpoint = "api/annotation_set", query_filters = list(my_filters2,another_filter2), verb = "GET")
+  # parse
+  p2 <- parse_api(r2)
 
-# Example 1 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
+# Example 4 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
 {
   # Create filters
-  my_filters_2 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
+  my_filters_4 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
   # Create other parameters
-  my_params_2 <- query_params(page = 14, results_per_page = 56)
+  my_params_4 <- query_params(page = 14, results_per_page = 56)
   # Append filters and parameters and send request
   # Note: use request() for non export endpoints
-  r2 <- request("GET", api, "api/annotation", my_filters_2, my_params_2)
+  r4 <- request("GET", api, "api/annotation", my_filters_4, my_params_4)
   # Parse
-  p2 <- parse_api(r2)
+  p4 <- parse_api(r4)
 
 }
 }
