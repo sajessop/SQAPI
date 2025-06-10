@@ -46,7 +46,10 @@ api <- SQAPI$new()
     val = query_filter(
       name = "usergroups",
       op = "any",
-      val = query_filter(name = "id", op = "eq", val = "92")
+      val = query_filter(
+        name = "id", 
+        op = "eq", 
+        val = "92")
     )
   )
   # Create parameters
@@ -58,16 +61,26 @@ api <- SQAPI$new()
     api = api,
     endpoint = "api/annotation/export",
     query_filters = my_filters,
-    query_parameters = my_params
+    query_parameters = my_params,
+    template = "data.csv"
   )
   # parse
-  p <- parse_api(r)
+  p <- parse_api(r, template = "data.csv")
 
   
   # Check if needs review...
-  another_filter <- query_filter(name = "needs_review", op = "eq", val = "True")
-  second_request <- export(api, "api/annotation/export", query_filters = list(my_filters, another_filter), query_parameters = my_params)
-  # Note: you can add more filters by passing a list of your query filters
+  another_filter <- query_filter(name = "needs_review", 
+                                 op = "eq", 
+                                 val = "True")
+   # Note: you can add more filters by passing a list of your query filters
+   second_request <- export(
+    api,
+    "api/annotation/export",
+    query_filters = list(my_filters, another_filter),
+    query_parameters = my_params
+  )
+
+   
 }
 
 # Example 1 - Get a list of deployments within a polygon defined by lat long coords
@@ -83,10 +96,10 @@ api <- SQAPI$new()
   my_filters1 <- query_filter("geom_start", "geo_in_poly", polygon)
   
   # Send request (using "request" for non-export endpoint)
-  r1 <- request("GET", api, "api/deployment", my_filters)
+  r1 <- request("GET", api, "api/deployment", my_filters1)
   
   #parse
-  p1 <- parse_api(r)
+  p1 <- parse_api(r1)
   
 # Example 2 get a list of annotation sets matching a specified id and check if they are real science
   
