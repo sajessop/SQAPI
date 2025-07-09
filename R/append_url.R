@@ -34,13 +34,18 @@ append_url <- function(api,
   if (is.null(query_filters)
     && is.null(query_parameters)) {
       return(base_url(host, endpoint))
-    }
+  }
+
+  if (is.null(query_filters)){
+    filters <- NULL
+  } else {
   # Wrap filters in a list (if not already in a list)
   # filters <- list(filters = list(query_filters))
   if (!is.list(query_filters[[1]]) || !all(c("name", "op") %in% names(query_filters[[1]]))) {
     query_filters <- list(query_filters)
   }
   filters <- list(filters = query_filters)
+  }
 
   # Directly extract q and qparams from query_parameters
   q <- query_parameters$q
@@ -60,22 +65,23 @@ append_url <- function(api,
       }
     }
   }
+  # Make processed_q null if it is an empty list
+  processed_q <- if (length(processed_q) == 0) NULL else processed_q
 
   # Combine filters and processed_q, convert to JSON
+  if (length(processed_q) > 0){
   combined_q_json <- jsonlite::toJSON(c(filters, processed_q), auto_unbox = TRUE)
-
-  # Remove "[[]]" for cases where multiple query filters are passes as a list
-  # if (grepl('"filters"\\s*:\\s*\\[\\[', combined_q_json))
-  # {
-  #   combined_q_json <- sub('"filters"\\s*:\\s*\\[\\[+',
-  #                          '"filters":[',
-  #                          combined_q_json)
-  # }
+  } else {
+    combined_q_json <- jsonlite::toJSON(c(filters), auto_unbox = TRUE)
+  }
 
   # Construct URL
   url <- httr::parse_url(base_url(host, endpoint))
-  url$query <- c(list(q = combined_q_json), qparams)
-
+  if (!is.null(combined_q_json)) {
+    url$query <- c(list(q = combined_q_json), qparams)
+  } else {
+    url$query <- qparams
+  }
   return(httr::build_url(url))
 }
 

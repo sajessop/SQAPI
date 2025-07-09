@@ -1,24 +1,24 @@
 #' Parse SQUIDLE API Response
 #'
-#' Parses the response content from the SQUIDLE API based on the specified template type
-#' in \code{query_params} or the default JSON. Supports CSV and JSON response formats.
+#' Parses the response content from the SQUIDLE API based on the specified file type
+#' in \code{query_params(template)} or the default JSON. Supports CSV and JSON.
 #'
 #' @param response An \code{httr::response} object returned by the request or export call.
-#' @param template Optional string specifying the expected response format.
-#'   Defaults to \code{"dataframe.json"}. Supported values are \code{"data.csv"} and \code{"dataframe.json"}.
+#' @param filetype Optional string specifying the expected response format.
+#'   Defaults to \code{"json"}. Supported values are \code{"csv"} and \code{"json"}.
 #'
 #' @return A parsed R object:
 #' \itemize{
-#'   \item If \code{template = "data.csv"}: a \code{data.frame}.
-#'   \item If \code{template = "dataframe.json"}: a list or data frame, depending on the JSON structure.
+#'   \item If \code{filetype = "csv"}: a \code{data.frame}.
+#'   \item If \code{filetype = "json"}: a list or data frame, depending on the JSON structure.
 #' }
 #'
 #' @details
 #' This function is used to convert raw API responses into usable R data
-#' structures based on the response template used in the request. Supported formats include:
+#' structures. Supported formats include:
 #' \itemize{
-#'   \item \code{"data.csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
-#'   \item \code{"dataframe.json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
+#'   \item \code{"csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
+#'   \item \code{"json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
 #' }
 #'
 #' @examples
@@ -53,20 +53,20 @@
 #'   metadata_filename = "my_metadata1.json"
 #' )
 #'    # Parse
-#' p1 <- parse_api(r1, "data.csv")
+#' p1 <- parse_api(r1, "csv")
 #' }
 #'
 #' @export
-parse_api <- function(response, template = NULL) {
-  template <- if (is.null(template)) "dataframe.json" else template
+parse_api <- function(response, filetype = NULL) {
+  filetype <- if (is.null(filetype)) "json" else filetype
 
 
-  parsed <- switch(template,
-                   "data.csv" = {
+  parsed <- switch(filetype,
+                   "csv" = {
                      raw_text <- rawToChar(response$content)
                      utils::read.csv(textConnection(raw_text))
                    },
-                   "dataframe.json" = {
+                   "json" = {
                      jsonlite::fromJSON(httr::content(response, "text", encoding = "UTF-8"))
                    })
 
