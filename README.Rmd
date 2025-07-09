@@ -65,7 +65,7 @@ api <- SQAPI$new()
     template = "data.csv"
   )
   # parse
-  p <- parse_api(r, template = "data.csv")
+  p <- parse_api(r, filetype = "csv")
 
   
   # Check if needs review...
