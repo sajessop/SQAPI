@@ -1,16 +1,11 @@
 .onAttach <- function(libname, pkgname) {
-  if (.Platform$OS.type == "windows") {
-    ssl_backend <- tryCatch(
-      curl::curl_version()$ssl_version,
-      error = function(e) NA
+  if (.Platform$OS.type == "windows" &&
+      Sys.getenv("CURL_SSL_BACKEND") != "openssl") {
+    packageStartupMessage(
+      "Note: On Windows, deafult SSL backend is schannel.\n",
+      "This may cause SSL/TLS timeout issues with squidle api.\n",
+      "To fix, restart R and run this *before* loading any packages:\n",
+      "  Sys.setenv(CURL_SSL_BACKEND = 'openssl')"
     )
-    if (!is.na(ssl_backend) && !grepl("OpenSSL", ssl_backend)) {
-      packageStartupMessage(
-        "Note: On Windows, you appear to be using the '", ssl_backend, "' SSL backend.\n",
-        "This may cause SSL/TLS timeout issues.\n",
-        "To fix, restart R and run this *before* loading any packages:\n",
-        "  Sys.setenv(CURL_SSL_BACKEND = 'openssl')"
-      )
-    }
   }
 }
