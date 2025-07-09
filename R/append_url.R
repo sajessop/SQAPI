@@ -31,8 +31,10 @@ append_url <- function(api,
                        disposition = NULL) {
   # Define host and return host + endpoint if there are no query_filters
   host <- api$host
-  if (is.null(query_filters)) return(base_url(host, endpoint))
-
+  if (is.null(query_filters)
+    && is.null(query_parameters)) {
+      return(base_url(host, endpoint))
+    }
   # Wrap filters in a list (if not already in a list)
   # filters <- list(filters = list(query_filters))
   if (!is.list(query_filters[[1]]) || !all(c("name", "op") %in% names(query_filters[[1]]))) {
