@@ -79,6 +79,7 @@ request <- function(verb,
 
     # Make the request using httr::VERB
     response <- httr::VERB(
+      #httr::verbose(data_out = TRUE, data_in = TRUE, info = TRUE, ssl = TRUE),
       verb = verb,
       url = url,
       body = body,
