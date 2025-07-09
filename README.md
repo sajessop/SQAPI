@@ -19,6 +19,7 @@ You can install the development version of SQAPI from
 # install.packages("devtools")
 devtools::install_github("sajessop/SQAPI")
 ```
+![SQAPI workflow](https://github.com/user-attachments/assets/18bba626-8e64-4217-ad15-66b3cc619129)
 
 ## Example
 
