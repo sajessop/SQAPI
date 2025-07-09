@@ -65,6 +65,18 @@ request <- function(verb,
                     query_filters = NULL,
                     query_parameters = NULL,
                     body = NULL) {
+# Validate input
+  if (!inherits(api, "SQAPI"))
+    stop("`api` must be an instance of SQAPI.")
+  if (!is.character(endpoint))
+    stop("`endpoint` must be a character string. See SQUIDLE API documentation for valid endpoints")
+  valid_verbs <- c("GET", "POST", "PATCH", "DELETE")
+  if (!(toupper(verb) %in% valid_verbs)) {
+    stop("Invalid HTTP verb: ", verb)
+  }
+  if (grepl("export", endpoint, ignore.case = TRUE)) {
+    stop("This is an export endpoint. Use SQAPI::export() for export endpoints")
+  }
 
   # Helper function to make request handling get/post/patch logic
   make_request <- function(verb, url, token, body = NULL) {
@@ -74,8 +86,6 @@ request <- function(verb,
       body <- jsonlite::toJSON(body, auto_unbox = TRUE)
     }
 
-    # Print statement
-    #print(paste("Body for", verb, "request: ", body))
 
     # Make the request using httr::VERB
     response <- httr::VERB(

@@ -4,31 +4,31 @@
 \alias{parse_api}
 \title{Parse SQUIDLE API Response}
 \usage{
-parse_api(response, template = NULL)
+parse_api(response, filetype = NULL)
 }
 \arguments{
 \item{response}{An \code{httr::response} object returned by the request or export call.}
 
-\item{template}{Optional string specifying the expected response format.
-Defaults to \code{"dataframe.json"}. Supported values are \code{"data.csv"} and \code{"dataframe.json"}.}
+\item{filetype}{Optional string specifying the expected response format.
+Defaults to \code{"json"}. Supported values are \code{"csv"} and \code{"json"}.}
 }
 \value{
 A parsed R object:
 \itemize{
-\item If \code{template = "data.csv"}: a \code{data.frame}.
-\item If \code{template = "dataframe.json"}: a list or data frame, depending on the JSON structure.
+\item If \code{filetype = "csv"}: a \code{data.frame}.
+\item If \code{filetype = "json"}: a list or data frame, depending on the JSON structure.
 }
 }
 \description{
-Parses the response content from the SQUIDLE API based on the specified template type
-in \code{query_params} or the default JSON. Supports CSV and JSON response formats.
+Parses the response content from the SQUIDLE API based on the specified file type
+in \code{query_params(template)} or the default JSON. Supports CSV and JSON.
 }
 \details{
 This function is used to convert raw API responses into usable R data
-structures based on the response template used in the request. Supported formats include:
+structures. Supported formats include:
 \itemize{
-\item \code{"data.csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
-\item \code{"dataframe.json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
+\item \code{"csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
+\item \code{"json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
 }
 }
 \examples{
@@ -63,7 +63,7 @@ r1 <- export(
   metadata_filename = "my_metadata1.json"
 )
    # Parse
-p1 <- parse_api(r1, "data.csv")
+p1 <- parse_api(r1, "csv")
 }
 
 }

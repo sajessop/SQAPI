@@ -266,10 +266,17 @@ export <- function(api,
                    metadata_filename = "metadata.json") {
 
   # Validate input types
-  if (!inherits(api, "SQAPI")) stop("`api` must be an instance of SQAPI.")
-  if (!is.character(endpoint)) stop("`endpoint` must be a character string. See SQUIDLE API documentation for valid endpoints")
-  if (write_disk && (is.null(filename) || !is.character(filename))) stop("`filename` must be provided and must be a character string if `write_disk = TRUE`.")
-
+  if (!inherits(api, "SQAPI"))
+    stop("`api` must be an instance of SQAPI.")
+  if (!is.character(endpoint))
+    stop("`endpoint` must be a character string. See SQUIDLE API documentation for valid endpoints")
+  if (write_disk &&
+      (is.null(filename) ||
+       !is.character(filename)))
+    stop("`filename` must be provided and must be a character string if `write_disk = TRUE`.")
+  if (!grepl("export", endpoint, ignore.case = TRUE)) {
+    stop("This is NOT an export endpoint. Use SQAPI::request() for non export endpoints")
+  }
   # Construct and print URL
   url <- append_url(
     api = api,
