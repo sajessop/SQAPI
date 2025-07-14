@@ -10,6 +10,8 @@ request(
   endpoint,
   query_filters = NULL,
   query_parameters = NULL,
+  template = NULL,
+  disposition = NULL,
   body = NULL
 )
 }
@@ -31,6 +33,11 @@ to be encoded as JSON within the \code{q={}} string.}
 \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
 that appear outside the \code{q={}} string.}
 }}
+
+\item{template}{Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.}
+
+\item{disposition}{Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
+See SQUIDLE API documentation for details on template and disposition.}
 
 \item{body}{A named R list to include as the JSON body of the request (for POST or PATCH). Can be \code{NULL}.
 \code{NULL} is expected for \code{"GET"} requests.}

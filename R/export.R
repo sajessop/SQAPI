@@ -139,9 +139,6 @@ poll_for_result <- function(api, json, write_disk, filename) {
 #' the status url, and returns the result. Metadata headers are also written to a separate file if exporting CSV.
 #'
 #' @inheritParams request
-#' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
-#' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
-#' See SQUIDLE API documentation for details on template and disposition.
 #' @param poll Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.
 #' @param write_disk Logical. If \code{TRUE}, writes the result to disk. Defaults to \code{FALSE}.
 #' @param filename A character string specifying the output filename (required if \code{write_disk = TRUE}).
@@ -260,6 +257,7 @@ export <- function(api,
                    query_parameters = NULL,
                    template = NULL,
                    disposition = NULL,
+                   transform = FALSE,
                    poll = TRUE,
                    write_disk = FALSE,
                    filename = NULL,
@@ -284,7 +282,8 @@ export <- function(api,
     query_filters = query_filters,
     query_parameters = query_parameters,
     template = template,
-    disposition = disposition
+    disposition = disposition,
+    transform = transform
   )
   cat("Constructed URL: <", utils::URLdecode(url), ">\n")
 

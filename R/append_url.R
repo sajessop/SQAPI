@@ -28,14 +28,15 @@ append_url <- function(api,
                        query_filters = NULL,
                        query_parameters = NULL,
                        template = NULL,
-                       disposition = NULL) {
-  # Define host and return host + endpoint if there are no query_filters
+                       disposition = NULL,
+                       transform = FALSE) {
+  # Define host and return host + endpoint if there are no query_filters or query_params
   host <- api$host
   if (is.null(query_filters)
     && is.null(query_parameters)) {
       return(base_url(host, endpoint))
   }
-
+  # deal with query_filters
   if (is.null(query_filters)){
     filters <- NULL
   } else {
@@ -50,9 +51,15 @@ append_url <- function(api,
   # Directly extract q and qparams from query_parameters
   q <- query_parameters$q
   qparams <- query_parameters$qparams
-  if (!is.null(template)) qparams$template <- template
-  if (!is.null(disposition)) qparams$disposition <- disposition
-
+  if (!is.null(template))
+    qparams$template <- template
+  if (!is.null(disposition))
+    qparams$disposition <- disposition
+  if (transform) {
+    qparams$f <- jsonlite::toJSON(list(operations = list(
+      list(module = "pandas", method = "json_normalize")
+    )), auto_unbox = TRUE)
+  }
   # Process q
   processed_q <- list()
   for (param in names(q)) {
@@ -80,8 +87,7 @@ append_url <- function(api,
   if (!is.null(combined_q_json)) {
     url$query <- c(list(q = combined_q_json), qparams)
   } else {
-    url$query <- qparams
+    url$query <- c(qparams)
   }
   return(httr::build_url(url))
 }
-
