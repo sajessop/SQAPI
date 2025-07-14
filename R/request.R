@@ -17,6 +17,9 @@
 #'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
 #'     that appear outside the \code{q={}} string.}
 #'   }
+#' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
+#' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
+#' See SQUIDLE API documentation for details on template and disposition.
 #' @param body A named R list to include as the JSON body of the request (for POST or PATCH). Can be \code{NULL}.
 #' \code{NULL} is expected for `"GET"` requests.
 #'
@@ -64,6 +67,8 @@ request <- function(verb,
                     endpoint,
                     query_filters = NULL,
                     query_parameters = NULL,
+                    template = NULL,
+                    disposition = NULL,
                     body = NULL) {
 # Validate input
   if (!inherits(api, "SQAPI"))
@@ -108,7 +113,9 @@ request <- function(verb,
     api = api,
     endpoint = endpoint,
     query_filters = query_filters,
-    query_parameters = query_parameters
+    query_parameters = query_parameters,
+    template = template,
+    disposition = disposition
   )
   cat("Constructed URL: ")
   cat(utils::URLdecode(url), "\n")
