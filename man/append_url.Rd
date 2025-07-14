@@ -10,7 +10,8 @@ append_url(
   query_filters = NULL,
   query_parameters = NULL,
   template = NULL,
-  disposition = NULL
+  disposition = NULL,
+  transform = FALSE
 )
 }
 \arguments{

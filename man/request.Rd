@@ -12,6 +12,7 @@ request(
   query_parameters = NULL,
   template = NULL,
   disposition = NULL,
+  transform = FALSE,
   body = NULL
 )
 }
@@ -38,6 +39,8 @@ that appear outside the \code{q={}} string.}
 
 \item{disposition}{Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
 See SQUIDLE API documentation for details on template and disposition.}
+
+\item{transform}{Binary option to append f= query sting as per API GUI. Placeholder and testing tool.}
 
 \item{body}{A named R list to include as the JSON body of the request (for POST or PATCH). Can be \code{NULL}.
 \code{NULL} is expected for \code{"GET"} requests.}
