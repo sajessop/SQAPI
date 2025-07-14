@@ -15,7 +15,8 @@ Imports:
     httr,
     jsonlite,
     R6,
-    utils
+    utils,
+    XML
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -4,19 +4,23 @@
 \alias{parse_api}
 \title{Parse SQUIDLE API Response}
 \usage{
-parse_api(response, filetype = NULL)
+parse_api(response, filetype = c("csv", "json", "html"), view_html = FALSE)
 }
 \arguments{
 \item{response}{An \code{httr::response} object returned by the request or export call.}
 
 \item{filetype}{Optional string specifying the expected response format.
-Defaults to \code{"json"}. Supported values are \code{"csv"} and \code{"json"}.}
+Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"} and \code{"txt"}.}
+
+\item{view_html}{Binary option to view html in default browser.}
 }
 \value{
 A parsed R object:
 \itemize{
 \item If \code{filetype = "csv"}: a \code{data.frame}.
 \item If \code{filetype = "json"}: a list or data frame, depending on the JSON structure.
+\item If \code{filetype = "html"}: a character string representing html text.
+\item If \code{filetype = "txt"}: a character string representing txt text.
 }
 }
 \description{
@@ -29,6 +33,8 @@ structures. Supported formats include:
 \itemize{
 \item \code{"csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
 \item \code{"json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
+\item \code{"html"}: Reads html content into html character string.
+\item \code{"txt"}: Reads txt content into character string.
 }
 }
 \examples{
