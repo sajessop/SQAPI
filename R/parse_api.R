@@ -13,7 +13,7 @@
 #'   \item If \code{filetype = "csv"}: a \code{data.frame}.
 #'   \item If \code{filetype = "json"}: a list or data frame, depending on the JSON structure.
 #'   \item If \code{filetype = "html"}: a character string representing html text.
-#'   \item If \code{filetype = "txt"}: a character string representing txt text.
+#'   \item If \code{filetype = "txt"}: a \code{data.frame}.
 #' }
 #'
 #' @details
@@ -23,7 +23,7 @@
 #'   \item \code{"csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
 #'   \item \code{"json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
 #'   \item \code{"html"}: Reads html content into html character string.
-#'   \item \code{"txt"}: Reads txt content into character string.
+#'   \item \code{"txt"}: Parses txt content into a \code{data.frame} using \code{read.delim()}
 #' }
 #'
 #' @examples
