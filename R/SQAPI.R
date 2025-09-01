@@ -20,23 +20,16 @@ SQAPI <- R6::R6Class("SQAPI", public = list(
   #' @param host Host url - defaults to "https://squidle.org".
   #' @param auth Your SQUIDLE API token.
   #' @return A new `SQAPI` object.
-  initialize = function(host = NULL) {
-    if (is.null(host)) {
-      self$host <- "https://squidle.org"
-    } else{
-      self$host <- host
-    }
+  initialize = function(host = NULL, auth = NULL) {
+    self$host <- if (is.null(host)) "https://squidle.org" else host
 
-    if (is.null(getOption("api_token"))) {
-      if (interactive()) {
-        self$auth <- getPass::getPass("Enter your API token: ")
-      } else {
-        # Fallback for non-interactive (e.g. devtools::check()
-        self$auth <- "default_password"
-      }
-      options(api_token = self$auth)
+    if (!is.null(auth)) {
+      self$auth <- auth
+    } else if (interactive()) {
+      self$auth <- getPass::getPass("Enter your API token: ")
     } else {
-      self$auth <- getOption("api_token")
+      # Fallback for non-interactive mode (e.g., devtools::check())
+      self$auth <- "default_password"
     }
   }
 ))
