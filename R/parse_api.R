@@ -62,7 +62,7 @@
 #' }
 #'
 #' @export
-parse_api <- function(response, filetype = c("csv", "json", "html", "txt"), view_html = FALSE) {
+parse_api <- function(response, filetype = c("json", "csv", "html", "txt"), view_html = FALSE) {
   filetype <- match.arg(filetype)
 
   parsed <- switch(filetype,

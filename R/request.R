@@ -72,7 +72,7 @@ request <- function(verb,
                     disposition = NULL,
                     transform = FALSE,
                     body = NULL) {
-# Validate input
+  # Validate input
   if (!inherits(api, "SQAPI"))
     stop("`api` must be an instance of SQAPI.")
   if (!is.character(endpoint))
@@ -100,10 +100,10 @@ request <- function(verb,
       verb = verb,
       url = url,
       body = body,
+      httr::accept("text/html"),
+      httr::content_type("text/html"),
       config = httr::add_headers(
-        "x-auth-token" =  token,
-        "Content-Type" = "application/json",
-        "Accept" = "application/json"
+        "x-auth-token" =  token
       )
     )
 
