@@ -1,3 +1,55 @@
+#' Helper to Make an HTTP Request to the SQUIDLE API Endpoint
+#'
+#' Internal helper that sends a GET request to the SQUIDLE API endpoint. Adds headers as needed depending on verb.
+#'
+#' @param verb A valid http verb.
+#' @param url A character string representing the full URL for the API export request.
+#' @param token A character string containing the authentication token to include in the request header.
+#' @param body A named R list to include as the JSON body of the request (for POST or PATCH). Can be \code{NULL}.
+#'
+#' @return An \code{httr::response} object.
+#'
+#' @details
+#' This function is used internally within request to make API requests.
+#'
+#' @keywords internal
+make_request <- function(verb, url, token, body = NULL) {
+  # For POST or PATCH
+  if (!is.null(body)) {
+    # Ensure body is a valid JSON object for POST/PATCH
+    body <- jsonlite::toJSON(body, auto_unbox = TRUE)
+    # Make the request using httr::VERB
+    response <- httr::VERB(
+      verb = verb,
+      url = url,
+      body = body,
+      httr::accept("application/json"),
+      httr::content_type("application/json"),
+      config = httr::add_headers(
+        "x-auth-token" =  token
+      )
+    )
+  } else {
+  # For GET requests Make the request using httr::VERB
+  # Add relevant headers
+  response <- httr::VERB(
+    #httr::verbose(data_out = TRUE, data_in = TRUE, info = TRUE, ssl = TRUE),
+    verb = verb,
+    url = url,
+    body = body,
+    httr::accept("text/html"),
+    httr::content_type("text/html"),
+    config = httr::add_headers(
+      "x-auth-token" =  token
+    )
+  )
+}
+  return(response)
+}
+
+
+
+
 #' Make a Request to SQUIDLE API
 #'
 #' Sends an HTTP request (e.g., GET, POST, PATCH, DELETE) to a specified SQUIDLE API endpoint.
@@ -85,30 +137,6 @@ request <- function(verb,
     stop("This is an export endpoint. Use SQAPI::export() for export endpoints")
   }
 
-  # Helper function to make request handling get/post/patch logic
-  make_request <- function(verb, url, token, body = NULL) {
-    # Handle body for POST or PATCH requests
-    if (!is.null(body)) {
-      # Ensure body is a valid JSON object for POST/PATCH
-      body <- jsonlite::toJSON(body, auto_unbox = TRUE)
-    }
-
-
-    # Make the request using httr::VERB
-    response <- httr::VERB(
-      #httr::verbose(data_out = TRUE, data_in = TRUE, info = TRUE, ssl = TRUE),
-      verb = verb,
-      url = url,
-      body = body,
-      httr::accept("text/html"),
-      httr::content_type("text/html"),
-      config = httr::add_headers(
-        "x-auth-token" =  token
-      )
-    )
-
-    return(response)
-  }
 
   # Construct and print url
   url <- append_url(
