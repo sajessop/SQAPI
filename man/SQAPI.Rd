@@ -33,7 +33,7 @@ variable name and pass it to the \code{api} field in SQAPI functions such
 as \code{export} and \code{request}. This will handle authentication
 of all request to SQUIDLE API in an "r" session.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SQAPI$new(host = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SQAPI$new(host = NULL, auth = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

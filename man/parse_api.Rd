@@ -4,37 +4,40 @@
 \alias{parse_api}
 \title{Parse SQUIDLE API Response}
 \usage{
-parse_api(response, filetype = c("csv", "json", "html"), view_html = FALSE)
+parse_api(
+  response,
+  filetype = c("json", "csv", "html", "txt"),
+  view_html = FALSE
+)
 }
 \arguments{
 \item{response}{An \code{httr::response} object returned by the request or export call.}
 
 \item{filetype}{Optional string specifying the expected response format.
-Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"} and \code{"txt"}.}
+Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"}, and \code{"txt"}.}
 
 \item{view_html}{Binary option to view html in default browser.}
 }
 \value{
 A parsed R object:
-\itemize{
-\item If \code{filetype = "csv"}: a \code{data.frame}.
-\item If \code{filetype = "json"}: a list or data frame, depending on the JSON structure.
-\item If \code{filetype = "html"}: a character string representing html text.
-\item If \code{filetype = "txt"}: a character string representing txt text.
+\describe{
+\item{csv}{a \code{data.frame}.}
+\item{json}{a list or data frame, depending on the JSON structure.}
+\item{html}{a character string representing HTML text, or invisibly a file path if \code{view_html = TRUE}.}
+\item{txt}{a \code{data.frame}.}
 }
 }
 \description{
-Parses the response content from the SQUIDLE API based on the specified file type
-in \code{query_params(template)} or the default JSON. Supports CSV and JSON.
+Parses the response content from the SQUIDLE API based on the specified file type or the default JSON.
 }
 \details{
 This function is used to convert raw API responses into usable R data
 structures. Supported formats include:
-\itemize{
-\item \code{"csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
-\item \code{"json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
-\item \code{"html"}: Reads html content into html character string.
-\item \code{"txt"}: Reads txt content into character string.
+\describe{
+\item{csv}{Parses CSV content into a \code{data.frame} using \code{read.csv()}.}
+\item{json}{Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.}
+\item{html}{Returns raw HTML text, or opens a temporary file in the browser if \code{view_html = TRUE}.}
+\item{txt}{Parses TXT content into a \code{data.frame} using \code{read.delim()}.}
 }
 }
 \examples{

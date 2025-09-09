@@ -1,29 +1,28 @@
 #' Parse SQUIDLE API Response
 #'
-#' Parses the response content from the SQUIDLE API based on the specified file type
-#' in \code{query_params(template)} or the default JSON. Supports CSV and JSON.
+#' Parses the response content from the SQUIDLE API based on the specified file type or the default JSON.
 #'
 #' @param response An \code{httr::response} object returned by the request or export call.
 #' @param filetype Optional string specifying the expected response format.
-#'   Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"} and \code{"txt"}.
+#'   Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"}, and \code{"txt"}.
 #' @param view_html Binary option to view html in default browser.
 #'
 #' @return A parsed R object:
-#' \itemize{
-#'   \item If \code{filetype = "csv"}: a \code{data.frame}.
-#'   \item If \code{filetype = "json"}: a list or data frame, depending on the JSON structure.
-#'   \item If \code{filetype = "html"}: a character string representing html text.
-#'   \item If \code{filetype = "txt"}: a \code{data.frame}.
+#' \describe{
+#'   \item{csv}{a \code{data.frame}.}
+#'   \item{json}{a list or data frame, depending on the JSON structure.}
+#'   \item{html}{a character string representing HTML text, or invisibly a file path if \code{view_html = TRUE}.}
+#'   \item{txt}{a \code{data.frame}.}
 #' }
 #'
 #' @details
 #' This function is used to convert raw API responses into usable R data
 #' structures. Supported formats include:
-#' \itemize{
-#'   \item \code{"csv"}: Parses CSV content into a \code{data.frame} using \code{read.csv()}.
-#'   \item \code{"json"}: Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.
-#'   \item \code{"html"}: Reads html content into html character string.
-#'   \item \code{"txt"}: Parses txt content into a \code{data.frame} using \code{read.delim()}
+#' \describe{
+#'   \item{csv}{Parses CSV content into a \code{data.frame} using \code{read.csv()}.}
+#'   \item{json}{Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.}
+#'   \item{html}{Returns raw HTML text, or opens a temporary file in the browser if \code{view_html = TRUE}.}
+#'   \item{txt}{Parses TXT content into a \code{data.frame} using \code{read.delim()}.}
 #' }
 #'
 #' @examples
@@ -79,7 +78,7 @@ parse_api <- function(response, filetype = c("json", "csv", "html", "txt"), view
                        html_file <- tempfile(fileext = ".html")
                        writeBin(response$content, html_file)
                        # Open the HTML file in the default system browser
-                       browseURL(html_file)
+                       utils::browseURL(html_file)
                        return(invisible(html_file))  # Return file path invisibly if needed
                      } else {
                        # Just return raw HTML text
