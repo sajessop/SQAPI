@@ -8,18 +8,19 @@
 #'
 #' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
 #' @param endpoint A character string specifying the endpoint. See
-#' "https://squidle.org/api/help?template=api_help_page.html" for endpoint details.
+#' \url{https://squidle.org/api/help?template=api_help_page.html} for endpoint details.
 #' @param query_filters The output from \code{SQAPI::query_filter()}. A named list of filters.
 #'  These are appended to the url inside of the \code{q={}} json string.
 #' @param query_parameters The output from \code{SQAPI::query_params()}. A list of two elements:
-#'   \itemize{
-#'     \item{\code{q}} {A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
+#'   \describe{
+#'     \item{\code{q}}{A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
 #'       to be encoded as JSON within the \code{q={}} string.}
-#'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
+#'     \item{\code{qparams}}{A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
 #'     that appear outside the \code{q={}} string.}
 #'   }
 #' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
 #' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
+#' @param transform Temporary. Logical. If \code{TRUE}, applies a JSON transformation operation to the query parameters.
 #'
 #' @return A character string representing the full URL encoded to meet the SQUIDLE API requirements.
 #'
