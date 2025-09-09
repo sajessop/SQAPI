@@ -1,29 +1,29 @@
 #' Parse SQUIDLE API Response
 #'
-#' Parses the response content from the SQUIDLE API based on the specified file type or the default JSON.
+#' Parses the response content from the SQUIDLE API. Attempts to retrieve file type from headers, otherwise falls back to json or user input file type.
+#' Supports CSV, JSON, HTML, and TXT.
 #'
-#' @param response An \code{httr::response} object returned by the request or export call.
-#' @param filetype Optional string specifying the expected response format.
-#'   Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"}, and \code{"txt"}.
-#' @param view_html Binary option to view html in default browser.
+#' @param response An \code{httr::response} object returned by a request or export call.
+#' @param filetype Optional string specifying the expected response format. Defaults to automated extraction of file type from headers, or falls back to \code{"json"}.
+#'   Supported values are \code{"csv"}, \code{"json"}, \code{"html"}, and \code{"txt"}.
+#' @param view_html Logical; if \code{TRUE} and \code{filetype = "html"}, opens the HTML in the default browser.
 #'
 #' @return A parsed R object:
-#' \describe{
-#'   \item{csv}{a \code{data.frame}.}
-#'   \item{json}{a list or data frame, depending on the JSON structure.}
-#'   \item{html}{a character string representing HTML text, or invisibly a file path if \code{view_html = TRUE}.}
-#'   \item{txt}{a \code{data.frame}.}
-#' }
+#'   \describe{
+#'     \item{csv}{A \code{data.frame}.}
+#'     \item{json}{A list or \code{data.frame}, depending on the JSON structure.}
+#'     \item{html}{Character string of HTML text, or invisibly a file path if \code{view_html = TRUE}.}
+#'     \item{txt}{A \code{data.frame}.}
+#'   }
 #'
 #' @details
-#' This function is used to convert raw API responses into usable R data
-#' structures. Supported formats include:
-#' \describe{
-#'   \item{csv}{Parses CSV content into a \code{data.frame} using \code{read.csv()}.}
-#'   \item{json}{Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.}
-#'   \item{html}{Returns raw HTML text, or opens a temporary file in the browser if \code{view_html = TRUE}.}
-#'   \item{txt}{Parses TXT content into a \code{data.frame} using \code{read.delim()}.}
-#' }
+#' This function converts raw API responses into usable R data structures:
+#'   \describe{
+#'     \item{csv}{Parses CSV content using \code{read.csv()}.}
+#'     \item{json}{Parses JSON content using \code{jsonlite::fromJSON()}.}
+#'     \item{html}{Returns HTML text, or opens a temporary file if \code{view_html = TRUE}.}
+#'     \item{txt}{Parses tab-delimited content using \code{read.delim()}.}
+#'   }
 #'
 #' @examples
 #' \dontrun{
@@ -61,33 +61,45 @@
 #' }
 #'
 #' @export
-parse_api <- function(response, filetype = c("json", "csv", "html", "txt"), view_html = FALSE) {
-  filetype <- match.arg(filetype)
+parse_api <- function(response, filetype = NULL, view_html = FALSE) {
+  # If filetype = NULL, attempt to extract the file type from the response
+  if (is.null(filetype)) {
+    filetype <- get_filetype(response)
+  } else {
+    filetype <- match.arg(filetype, c("json", "csv", "html", "txt"))
+  }
+
+  # Validate auto detected file type
+  if (!filetype %in% c("json", "csv", "html", "txt")) {
+    warning("Detected filetype '", filetype, "' not supported; defaulting to 'json'. Or manually input file type in function call")
+    filetype <- "json"
+  }
 
   parsed <- switch(filetype,
                    "csv" = {
                      raw_text <- rawToChar(response$content)
-                     utils::read.csv(textConnection(raw_text))
+                     tc <- textConnection(raw_text)
+                     on.exit(close(tc))
+                     utils::read.csv(tc)
                    },
                    "json" = {
                      jsonlite::fromJSON(httr::content(response, "text", encoding = "UTF-8"))
                    },
                    "html" = {
                      if (view_html) {
-                       # Save content to a temporary HTML file
                        html_file <- tempfile(fileext = ".html")
                        writeBin(response$content, html_file)
-                       # Open the HTML file in the default system browser
                        utils::browseURL(html_file)
-                       return(invisible(html_file))  # Return file path invisibly if needed
+                       return(invisible(html_file))
                      } else {
-                       # Just return raw HTML text
                        rawToChar(response$content)
                      }
                    },
                    "txt" = {
                      raw_text <- rawToChar(response$content)
-                     utils::read.delim(textConnection(raw_text), sep = "\t")
+                     tc <- textConnection(raw_text)
+                     on.exit(close(tc))
+                     utils::read.delim(tc, sep = "\t")
                    },
                    stop("Unsupported filetype")
   )

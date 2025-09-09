@@ -4,40 +4,36 @@
 \alias{parse_api}
 \title{Parse SQUIDLE API Response}
 \usage{
-parse_api(
-  response,
-  filetype = c("json", "csv", "html", "txt"),
-  view_html = FALSE
-)
+parse_api(response, filetype = NULL, view_html = FALSE)
 }
 \arguments{
-\item{response}{An \code{httr::response} object returned by the request or export call.}
+\item{response}{An \code{httr::response} object returned by a request or export call.}
 
-\item{filetype}{Optional string specifying the expected response format.
-Defaults to \code{"json"}. Supported values are \code{"csv"}, \code{"json"}, \code{"html"}, and \code{"txt"}.}
+\item{filetype}{Optional string specifying the expected response format. Defaults to automated extraction of file type from headers, or falls back to \code{"json"}.
+Supported values are \code{"csv"}, \code{"json"}, \code{"html"}, and \code{"txt"}.}
 
-\item{view_html}{Binary option to view html in default browser.}
+\item{view_html}{Logical; if \code{TRUE} and \code{filetype = "html"}, opens the HTML in the default browser.}
 }
 \value{
 A parsed R object:
 \describe{
-\item{csv}{a \code{data.frame}.}
-\item{json}{a list or data frame, depending on the JSON structure.}
-\item{html}{a character string representing HTML text, or invisibly a file path if \code{view_html = TRUE}.}
-\item{txt}{a \code{data.frame}.}
+\item{csv}{A \code{data.frame}.}
+\item{json}{A list or \code{data.frame}, depending on the JSON structure.}
+\item{html}{Character string of HTML text, or invisibly a file path if \code{view_html = TRUE}.}
+\item{txt}{A \code{data.frame}.}
 }
 }
 \description{
-Parses the response content from the SQUIDLE API based on the specified file type or the default JSON.
+Parses the response content from the SQUIDLE API. Attempts to retrieve file type from headers, otherwise falls back to json or user input file type.
+Supports CSV, JSON, HTML, and TXT.
 }
 \details{
-This function is used to convert raw API responses into usable R data
-structures. Supported formats include:
+This function converts raw API responses into usable R data structures:
 \describe{
-\item{csv}{Parses CSV content into a \code{data.frame} using \code{read.csv()}.}
-\item{json}{Parses JSON content into a list or \code{data.frame} using \code{jsonlite::fromJSON()}.}
-\item{html}{Returns raw HTML text, or opens a temporary file in the browser if \code{view_html = TRUE}.}
-\item{txt}{Parses TXT content into a \code{data.frame} using \code{read.delim()}.}
+\item{csv}{Parses CSV content using \code{read.csv()}.}
+\item{json}{Parses JSON content using \code{jsonlite::fromJSON()}.}
+\item{html}{Returns HTML text, or opens a temporary file if \code{view_html = TRUE}.}
+\item{txt}{Parses tab-delimited content using \code{read.delim()}.}
 }
 }
 \examples{

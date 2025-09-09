@@ -36,6 +36,24 @@ base_url <- function(host, endpoint){
   return(url)
 }
 
+#' Search for file type in response headers
+#'
+#' Internal helper that searches for file type in response headers.
+#'
+#' @param response Response object from a request or export call.
+#'
+#' @return String representing file type.
+#'
+#'
+get_filetype <- function(response) {
+  if (!is.null(response$headers$`content-disposition`)) {
+    ext <- sub(".*\\.([a-zA-Z0-9]+)$", "\\1", response$headers$`content-disposition`)
+    return(tolower(ext))
+  } else {
+    return("json")
+  }
+}
+
 
 
 
