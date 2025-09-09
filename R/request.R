@@ -11,10 +11,10 @@
 #' @param query_filters The output from \code{SQAPI::query_filter()}. A named list of filters.
 #'  These are appended to the url inside of the \code{q={}} json string.
 #' @param query_parameters The output from \code{SQAPI::query_params()}. A list of two elements:
-#'   \itemize{
-#'     \item{\code{q}} {A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
+#'   \describe{
+#'     \item{\code{q}}{A list of query parameters (e.g., \code{limit}, \code{offset}, \code{order_by}, \code{group_by}, \code{single})
 #'       to be encoded as JSON within the \code{q={}} string.}
-#'     \item{\code{qparams}} {A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
+#'     \item{\code{qparams}}{A list of top-level query parameters (e.g., \code{include_columns}, \code{page}, \code{results_per_page})
 #'     that appear outside the \code{q={}} string.}
 #'   }
 #' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
