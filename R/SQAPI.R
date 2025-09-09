@@ -21,7 +21,10 @@ SQAPI <- R6::R6Class("SQAPI", public = list(
   #' @param auth Your SQUIDLE API token.
   #' @return A new `SQAPI` object.
   initialize = function(host = NULL, auth = NULL) {
-    self$host <- if (is.null(host)) "https://squidle.org" else host
+    self$host <- if (is.null(host))
+      "https://squidle.org"
+    else
+      host
 
     if (!is.null(auth)) {
       self$auth <- auth
@@ -31,5 +34,19 @@ SQAPI <- R6::R6Class("SQAPI", public = list(
       # Fallback for non-interactive mode (e.g., devtools::check())
       self$auth <- "default_password"
     }
+
+    # Initial request to welcome user
+    welcome_url <- paste0(self$host, "/api/users/login")
+
+    welcome <- httr::GET(url = welcome_url,
+                         config = httr::add_headers("x-auth-token" =  self$auth))
+    parsed_welcome <- parse_api(welcome)
+    message(
+      "Welcome ",
+      parsed_welcome$first_name, " ",
+      parsed_welcome$last_name,
+      " to this authenticated SQAPI R session"
+    )
   }
+
 ))
