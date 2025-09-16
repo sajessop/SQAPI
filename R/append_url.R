@@ -30,6 +30,7 @@ append_url <- function(api,
                        query_parameters = NULL,
                        template = NULL,
                        disposition = NULL,
+                       translate = NULL,
                        transform = FALSE) {
   # Define host and return host + endpoint if there are no query_filters or query_params
   host <- api$host
@@ -83,12 +84,20 @@ append_url <- function(api,
     combined_q_json <- jsonlite::toJSON(c(filters), auto_unbox = TRUE)
   }
 
+  # Translate
+  if (!is.null(translate)){
+  json_translate <- jsonlite::toJSON(translate, auto_unbox = TRUE)
+  }
+
   # Construct URL
   url <- httr::parse_url(base_url(host, endpoint))
   if (!is.null(combined_q_json)) {
     url$query <- c(list(q = combined_q_json), qparams)
   } else {
     url$query <- c(qparams)
+  }
+  if (!is.null(translate)) {
+    url$query$translate <- json_translate
   }
   return(httr::build_url(url))
 }

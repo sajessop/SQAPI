@@ -171,6 +171,7 @@ export <- function(api,
                    template = NULL,
                    disposition = NULL,
                    transform = FALSE,
+                   translate = NULL,
                    poll = TRUE,
                    write_disk = FALSE,
                    filename = NULL,
@@ -196,7 +197,8 @@ export <- function(api,
     query_parameters = query_parameters,
     template = template,
     disposition = disposition,
-    transform = transform
+    transform = transform,
+    translate = translate
   )
   cat("Constructed URL: <", utils::URLdecode(url), ">\n")
 

@@ -21,7 +21,7 @@ translate <- function(target_label_scheme_id,
     stop("`target_label_scheme_id` must be input as interger.")
   }
 
-  translate <- list(target_label_scheme_id = as.character(target_label_scheme_id))
+  translate <- list(target_label_scheme_id = as.numeric(target_label_scheme_id))
 
   if (!is.null(vocab_registry_keys)) {
     if (!is.character(vocab_registry_keys)) {
