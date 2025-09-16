@@ -4,14 +4,13 @@
 #'
 #' @param target_label_scheme_id Integer. ID of the target label scheme (required).
 #' @param vocab_registry_keys Character vector. Optional ordered keys of vocab registries for semantic translation.
-#' @param mapping_override Named list of source label IDs -> target label IDs for overriding translations. Names must be source label IDs (as character or numeric) and values must be target label IDs (numeric).
+#' @param mapping_override Named list of source label IDs -> target label IDs for overriding translations. Names must be source label IDs and values must be target label IDs.
 #'
 #' @return A list suitable for passing as the `translate` parameter in `export()`.
 #' @examples
-#' build_translate(
-#'   target_label_scheme_id = 123,
-#'   vocab_registry_keys = c("squidle_core", "user_labels"),
-#'   mapping_override = list("45" = 100, "46" = 101)
+#' translate(
+#'   target_label_scheme_id = 1,
+#'   vocab_registry_keys = c("caab", "worms")
 #' )
 #' @export
 translate <- function(target_label_scheme_id,

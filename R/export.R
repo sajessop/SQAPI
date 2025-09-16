@@ -52,6 +52,7 @@ make_export_request <- function(url,
 #' the status url, and returns the result. Metadata headers are also written to a separate file if exporting CSV.
 #'
 #' @inheritParams request
+#' @param translate Optional. List built using \code{SQAPI::translate()} function. See API documentation for details.
 #' @param poll Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.
 #' @param write_disk Logical. If \code{TRUE}, writes the result to disk. Defaults to \code{FALSE}.
 #' @param filename A character string specifying the output filename (required if \code{write_disk = TRUE}).
