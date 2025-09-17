@@ -4,7 +4,6 @@
 # SQAPI
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 The goal of SQAPI is to allow user friendly interaction with SQUIDLE+
@@ -26,11 +25,13 @@ These are a few basic examples which shows you how to build a url and
 send a request:
 
 ``` r
-if (interactive()){
-library(SQAPI)
-api <- SQAPI$new()
-# Example 0 - Get all annotation sets from a usergroup with id matching 92
-{
+if (interactive()) {
+  library(SQAPI)
+  
+  # Create instance of SQAPI with SQAPI$new()
+  api <- SQAPI$new()
+  
+  ############## Example 0 - Get all annotation sets from a usergroup with id matching 92 ##############
   # Create filters
   my_filters <- query_filter(
     name = "annotation_set",
@@ -38,10 +39,7 @@ api <- SQAPI$new()
     val = query_filter(
       name = "usergroups",
       op = "any",
-      val = query_filter(
-        name = "id", 
-        op = "eq", 
-        val = "92")
+      val = query_filter(name = "id", op = "eq", val = "92")
     )
   )
   # Create parameters
@@ -58,64 +56,132 @@ api <- SQAPI$new()
   )
   # parse
   p <- parse_api(r, filetype = "csv")
-
+  
   
   # Check if needs review...
-  another_filter <- query_filter(name = "needs_review", 
-                                 op = "eq", 
-                                 val = "True")
-   # Note: you can add more filters by passing a list of your query filters
-   second_request <- export(
+  another_filter <- query_filter(name = "needs_review", op = "eq", val = "True")
+  # Note: you can add more filters by passing a list of your query filters
+  second_request <- export(
     api,
     "api/annotation/export",
     query_filters = list(my_filters, another_filter),
     query_parameters = my_params
   )
-
-   
-}
-
-# Example 1 - Get a list of deployments within a polygon defined by lat long coords
+  
+  
+  ############## Example 1 - Filtering by geom ##############
+  ## 1.1 Get a list of deployments within a polygon
   # Define polygon
   polygon <- list(
-  list(lat = -38.8, lon = 145.0),
-  list(lat = -38.8, lon = 149.5),
-  list(lat = -40.2, lon = 149.5),
-  list(lat = -40.2, lon = 145.0),
-  list(lat = -38.8, lon = 145.0)
-)
+    list(lat = -38.8, lon = 145.0),
+    list(lat = -38.8, lon = 149.5),
+    list(lat = -40.2, lon = 149.5),
+    list(lat = -40.2, lon = 145.0),
+    list(lat = -38.8, lon = 145.0)
+  )
   # Create filters
-  my_filters1 <- query_filter("geom_start", "geo_in_poly", polygon)
+  my_filters1.1 <- query_filter("geom_start", "geo_in_poly", polygon)
   
   # Send request (using "request" for non-export endpoint)
-  r1 <- request("GET", api, "api/deployment", my_filters1)
+  r1.1 <- request("GET", api, "api/deployment", my_filters1.1)
   
   #parse
-  p1 <- parse_api(r1)
+  p1.1 <- parse_api(r1.1)
   
-# Example 2 get a list of annotation sets matching a specified id and check if they are real science
+  ## 1.2 Get all annotations within a polygon
+  # Create nested filters for getting all annotations that contain media with poses within a polygon
+  my_filters1.2 <- query_filter(
+    name = "point",
+    op = "has",
+    val = query_filter(
+      name = "media",
+      op = "has",
+      val = query_filter(
+        name = "poses",
+        op = "any",
+        val = query_filter(name = "geom", op = "geo_in_poly", val = polygon)
+      )
+    )
+  )
   
+  # Send request to export endpoint and parse response
+  r1.2 <- export(api = api,
+                 endpoint = "api/annotation/export",
+                 query_filters = my_filters1.2)
+  p1.2 <- parse_api(r1.2)
+  
+  ############## Example 2 get a list of annotation sets matching a specified id and check if they are real science ##############
   # Create filters
   my_filters2 <- query_filter(name = "id", op = "eq", val = "5432")
   another_filter2 <- query_filter(name = "is_real_science", op = "eq", val = "true")
   
   # Send request
-  r2 <- request(api = api, endpoint = "api/annotation_set", query_filters = list(my_filters2,another_filter2), verb = "GET")
+  r2 <- request(
+    api = api,
+    endpoint = "api/annotation_set",
+    query_filters = list(my_filters2, another_filter2),
+    verb = "GET"
+  )
   # parse
   p2 <- parse_api(r2)
-
-# Example 4 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters
-{
+  
+  ############## Example 4 - A simple query to Get annotations that match annotation_set_id = 5432 and specify pagination parameters ##############
   # Create filters
-  my_filters_4 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
+  my_filters4 <- query_filter(name = "annotation_set_id", op = "eq", val = "5432")
   # Create other parameters
-  my_params_4 <- query_params(page = 14, results_per_page = 56)
+  my_params4 <- query_params(page = 14, results_per_page = 56)
   # Append filters and parameters and send request
   # Note: use request() for non export endpoints
-  r4 <- request("GET", api, "api/annotation", my_filters_4, my_params_4)
+  r4 <- request("GET", api, "api/annotation", my_filters4, my_params4)
   # Parse
   p4 <- parse_api(r4)
-
-}
+  
+  
+  ############## Example 5 - Using translate and include columns options ##############
+  # Create filters
+  my_filters5 <- query_filter(
+    name = "events",
+    op = "any",
+    val = query_filter(name = "id", op = "is_not_null")
+  )
+  
+  # Specify translate
+  t <- translate(target_label_scheme_id = 3, vocab_registry_keys = c("worms", "caab"))
+  # Create other params
+  my_params5 <- query_params(
+    group_by = "pose.dep",
+    include_columns = c(
+      "id",
+      "key",
+      "path_best",
+      "timestamp_start",
+      "path_best_thm",
+      "pose.timestamp",
+      "pose.lat",
+      "pose.lon",
+      "pose.alt",
+      "pose.dep",
+      "pose.data",
+      "pose.id",
+      "deployment.key",
+      "deployment.campaign.key",
+      "deployment.id",
+      "deployment.campaign.id",
+      "event_log"
+    )
+  )
+  # Send request
+  r5 <- export(
+    api = api,
+    endpoint = "api/media_collection/13453/export",
+    query_filters = my_filters5,
+    query_parameters = my_params5,
+    translate = t,
+    template = "data.csv",
+    metadata_filename = "my_metadata3.json"
+  )
+  
+  # Parse
+  p3 <- parse_api(r5)
 }
 ```
