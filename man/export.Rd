@@ -12,6 +12,7 @@ export(
   template = NULL,
   disposition = NULL,
   transform = FALSE,
+  translate = NULL,
   poll = TRUE,
   write_disk = FALSE,
   filename = NULL,
@@ -41,6 +42,8 @@ that appear outside the \code{q={}} string.}
 See SQUIDLE API documentation for details on template and disposition.}
 
 \item{transform}{Binary option to append f= query sting as per API GUI. Placeholder and testing tool.}
+
+\item{translate}{Optional. List built using \code{SQAPI::translate()} function. See API documentation for details.}
 
 \item{poll}{Logical. If \code{TRUE}, polls the status url until the result is ready. Defaults to \code{TRUE}.}
 

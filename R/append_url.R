@@ -6,6 +6,7 @@
 #' and \code{SQAPI::query_params}. Typically used as a helper function in \code{SQAPI::request()} and
 #' \code{SQAPI::export()}
 #'
+#' @inheritParams export
 #' @param api An instance of \code{SQAPI}, containing properties `"host"` and `"auth"`.
 #' @param endpoint A character string specifying the endpoint. See
 #' \url{https://squidle.org/api/help?template=api_help_page.html} for endpoint details.

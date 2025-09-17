@@ -11,6 +11,7 @@ append_url(
   query_parameters = NULL,
   template = NULL,
   disposition = NULL,
+  translate = NULL,
   transform = FALSE
 )
 }
@@ -34,6 +35,8 @@ that appear outside the \code{q={}} string.}
 \item{template}{Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.}
 
 \item{disposition}{Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.}
+
+\item{translate}{Optional. List built using \code{SQAPI::translate()} function. See API documentation for details.}
 
 \item{transform}{Temporary. Logical. If \code{TRUE}, applies a JSON transformation operation to the query parameters.}
 }
