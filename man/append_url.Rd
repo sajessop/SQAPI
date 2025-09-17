@@ -12,7 +12,7 @@ append_url(
   template = NULL,
   disposition = NULL,
   translate = NULL,
-  transform = FALSE
+  transform = NULL
 )
 }
 \arguments{
@@ -38,7 +38,7 @@ that appear outside the \code{q={}} string.}
 
 \item{translate}{Optional. List built using \code{SQAPI::translate()} function. See API documentation for details.}
 
-\item{transform}{Temporary. Logical. If \code{TRUE}, applies a JSON transformation operation to the query parameters.}
+\item{transform}{Temporary. List of transformations from \code{SQAPI::sqapi_transform}.}
 }
 \value{
 A character string representing the full URL encoded to meet the SQUIDLE API requirements.

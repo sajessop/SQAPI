@@ -11,7 +11,7 @@ export(
   query_parameters = NULL,
   template = NULL,
   disposition = NULL,
-  transform = FALSE,
+  transform = NULL,
   translate = NULL,
   poll = TRUE,
   write_disk = FALSE,

@@ -12,7 +12,7 @@ request(
   query_parameters = NULL,
   template = NULL,
   disposition = NULL,
-  transform = FALSE,
+  transform = NULL,
   body = NULL
 )
 }
