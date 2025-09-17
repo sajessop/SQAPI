@@ -192,6 +192,56 @@ if (interactive()) {
   
   # Parse
   p3 <- parse_api(r5)
+  
+  
+  ############## Example 5 - A POST request workflow ##############
+  # load library for use of %>% 
+  library(magrittr)
+  # Create a list to post
+  empty_post <- list("name" = "Example df name", "description" = "Description of media collection")
+  # Send request with body attached 
+  # POST to endpoint = "api/media_collection" to create a media collection
+  post <- request(
+    verb = "POST",
+    api = api,
+    endpoint = "api/media_collection",
+    body = empty_post
+  )
+  # This has created an empty media collection named "Example df name" with a description "Description of media collection"
+  
+  # Next we want to get the unique id of the media_collection we just created
+  f <- query_filter("name", "eq", "Example df name")
+  get <- request("GET",
+                 api = api,
+                 endpoint = "api/media_collection",
+                 query_filters = f)
+  parsed <- parse_api(get)
+  id <- parsed$objects$id
+  
+  # Now we want to populate the media collection with images from SQUIDLE
+  # Read in data file with list of media keys
+  df <- read.csv("dummy_media.csv")
+  # Collect unique keys from df
+  key_list <- df$point.media.key %>% unique()
+  
+  # Build post body
+  post_json <- toJSON(list(filters = list(list(
+    name = "key", # or "id"
+    op   = "in", val  = key_list
+  ))), auto_unbox = TRUE)
+  
+  # Wrap post_json in a named list as form parameter
+  post_me <- list(q = post_json)
+  
+
+  # POST request to the id of the empty media collection
+  post2 <- request(
+    verb = "POST",
+    api = api,
+    endpoint = "api/media_collection/14357/media", #from id object
+    body = post_me
+  )
+
 }
 ```
 
