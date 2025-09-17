@@ -10,7 +10,7 @@
 #' transform(list(module = "pandas", method = "json_normalize"))
 #'
 #' @export
-transform <- function(...) {
+sqapi_transform <- function(...) {
   ops <- list(...)
   if (length(ops) == 0) stop("You must supply at least one operation (as a list).")
 

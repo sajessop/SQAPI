@@ -122,7 +122,7 @@ request <- function(verb,
                     query_parameters = NULL,
                     template = NULL,
                     disposition = NULL,
-                    transform = FALSE,
+                    transform = NULL,
                     body = NULL) {
   # Validate input
   if (!inherits(api, "SQAPI"))

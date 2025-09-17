@@ -21,7 +21,7 @@
 #'   }
 #' @param template Optional character string to specify the template to use (e.g., "data.csv"). Default is JSON.
 #' @param disposition Optional character string to specify content disposition. Accepts \code{"attachment"} and \code{"inline"}.
-#' @param transform Temporary. Logical. If \code{TRUE}, applies a JSON transformation operation to the query parameters.
+#' @param transform Temporary. List of transformations from \code{SQAPI::sqapi_transform}.
 #'
 #' @return A character string representing the full URL encoded to meet the SQUIDLE API requirements.
 #'
@@ -32,7 +32,7 @@ append_url <- function(api,
                        template = NULL,
                        disposition = NULL,
                        translate = NULL,
-                       transform = FALSE) {
+                       transform = NULL) {
   # Define host and return host + endpoint if there are no query_filters or query_params
   host <- api$host
   if (is.null(query_filters)
@@ -58,11 +58,7 @@ append_url <- function(api,
     qparams$template <- template
   if (!is.null(disposition))
     qparams$disposition <- disposition
-  if (transform) {
-    qparams$f <- jsonlite::toJSON(list(operations = list(
-      list(module = "pandas", method = "json_normalize")
-    )), auto_unbox = TRUE)
-  }
+
   # Process q
   processed_q <- list()
   for (param in names(q)) {
@@ -85,10 +81,6 @@ append_url <- function(api,
     combined_q_json <- jsonlite::toJSON(c(filters), auto_unbox = TRUE)
   }
 
-  # Translate
-  if (!is.null(translate)){
-  json_translate <- jsonlite::toJSON(translate, auto_unbox = TRUE)
-  }
 
   # Construct URL
   url <- httr::parse_url(base_url(host, endpoint))
@@ -98,7 +90,10 @@ append_url <- function(api,
     url$query <- c(qparams)
   }
   if (!is.null(translate)) {
-    url$query$translate <- json_translate
+    url$query$translate <- jsonlite::toJSON(translate, auto_unbox = TRUE)
+  }
+  if (!is.null(transform)) {
+    url$query$f <- jsonlite::toJSON(transform, auto_unbox = TRUE)
   }
   return(httr::build_url(url))
 }
