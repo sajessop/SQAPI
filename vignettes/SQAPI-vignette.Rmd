@@ -1,0 +1,44 @@
+---
+title: "Introduction to SQAPI"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SQAPI}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette is intended to guide users through the whole process of using SQAPI for querying the SQUIDLE+ API.
+The intention is to introduce users to the SQAPI functions and provide useful workflow examples of how the package is can be used.
+The most common use for SQAPI is to make GET requests. These send a http request to a specified endpoint with attached filters and parameters to get your data in a specified format.
+This package also supports making POST and PATCH requests. 
+
+For specific details on endpoints, see SQUIDLE+ API documentation: https://squidle.org/api/help?template=api_help_page.html
+
+```{r setup}
+library(SQAPI)
+```
+Upon loading the package, a start-up message informs Windows users of potential timeout issues with large HTTP requests. Follow these instructions if needed.
+
+FLOWCHART HERE TO SHOW WORKFLOW
+
+
+# Set up
+To make requests to SQUIDLE+ API, you will first need to create an instance of SQAPI. This stores your token and the host URL. 
+```{r, include=TRUE, eval=FALSE}
+# Step 1: Create an instance of SQAPI
+api <- SQAPI$new()
+```
+There is no need to actually pass the auth to this SQAPI$new() as it will interactively prompt you to enter your token. It will then store it to be passed to SQAPI::request() and SQAPI::export() functions. For security reasons, it is best to use this interactive feature and not hard code your token.
+You will need to activate your token at https://squidle.org/.
+
+# A GET request example
+
+
+ 
