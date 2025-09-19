@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 This vignette is intended to guide users through the whole process of using SQAPI for querying the SQUIDLE+ API.
-The intention is to introduce users to the SQAPI functions and provide useful workflow examples of how the package is can be used.
+The intention is to introduce users to the SQAPI functions and provide useful workflow examples of how the package can be used.
 The most common use for SQAPI is to make GET requests. These send a http request to a specified endpoint with attached filters and parameters to get your data in a specified format.
 This package also supports making POST and PATCH requests. 
 
@@ -35,10 +35,195 @@ To make requests to SQUIDLE+ API, you will first need to create an instance of S
 # Step 1: Create an instance of SQAPI
 api <- SQAPI$new()
 ```
-There is no need to actually pass the auth to this SQAPI$new() as it will interactively prompt you to enter your token. It will then store it to be passed to SQAPI::request() and SQAPI::export() functions. For security reasons, it is best to use this interactive feature and not hard code your token.
+There is no need to actually pass your token to this SQAPI$new() as it will interactively prompt you to enter your token. It will then store it to be passed to SQAPI::request() and SQAPI::export() functions. For security reasons, it is best to use this interactive feature and not hard code your token.
 You will need to activate your token at https://squidle.org/.
 
-# A GET request example
+# GET requests
+This example first creates the query_filter list to filter for annotation_set_id that is equal to 16590.
+This query_filter() function is a key part of the workflow to create filter objects that can then be passes to request() or export(). This structure allows
+the URL to be encoded to match exactly what the SQUIDLE+ API expects.
+```{r, include=TRUE, eval=FALSE}
+# Create filters
+filters <- query_filter(name = "annotation_set_id", op = "eq", val = "16590")
+```
 
-
+This filter object is then passes to the request function specifying the verb "GET", api as an instance of SQAPI, endpoint, query_filters, and template.
+The response from this request is then parsed using the parse_api() function. 
+```{r, include=TRUE, eval=FALSE}
+# Note: use request() for non export endpoints
+req <- request(
+  "GET",
+  api,
+  "api/annotation",
+  query_filters = filters,
+  template = "data.csv"
+)
  
+# Parse
+pars <- parse_api(req)
+```
+This example also includes template = "data.csv". For the specified template with a file extension "csv", the parsed object will be an r data frame.
+
+## Multiple filters
+It is possible to add more filters by passing a list of filters to the query_filters argument of request().
+```{r, include=TRUE, eval=FALSE}
+another_filter <- query_filter(name = "needs_review", op = "eq", val = "True")
+req <- request(
+  "GET",
+  api,
+  "api/annotation",
+  query_filters = list(filters, another_filter),
+  template = "data.csv"
+)
+ 
+# Parse
+pars <- parse_api(req)
+```
+This example shows another_filter added that specifies the "needs_review" filter being "True". 
+
+## Query parameters
+The query_params() function allows building of parameters that can then be passes to request() or export(). Like query_filters(), this structure allows
+the URL to be encoded to match exactly what the SQUIDLE+ API expects.
+```{r, include=TRUE, eval=FALSE}
+params <- query_params(
+    page = 3, 
+    results_per_page = 500
+  )
+req <- request(
+  "GET",
+  api,
+  "api/annotation",
+  query_filters = filters,
+  query_parameters = params,
+  template = "data.csv"
+)
+ 
+# Parse
+pars <- parse_api(req)
+```
+This example shows how to handle pagination, with specification of "page" and "results_per_page". Note that both of these are passes as integers. See query_params() documentation for all parameters that can be specified with this function.
+
+# Export Endpoints
+SQUIDLE+ API export endpoints can be used to retrieve large amounts of data without looping through pages. These endpoints have status polling which polls a status URL until it indicates the result is ready. The export() function supports GET requests to SQUIDLE+ export endpoints. It does this by generating a progress bar and polling the status URL, before sending a request to the result URL when the result is ready. 
+```{r, include=TRUE, eval=FALSE}
+  # Create nested filters
+  filters <- query_filter(
+    name = "events",
+    op = "any",
+    val = query_filter(name = "id", op = "is_not_null")
+  )
+  # Create other params
+  params <- query_params(
+    limit = 100, offset = 20
+  )
+  # Send request
+  req <-  export(
+    api = api,
+    endpoint = "api/media_collection/13453/export",
+    query_filters = filters,
+    query_parameters = params
+  )
+
+  # Parse
+  pars <- parse_api(req)
+```
+This example also demonstrates the use of the limit and offset parameters (also passed as integers). Limit specifies the maximum number of objects to return and offset specifies the offset into the results set of the returned list of instances. This can be useful for very large data sets as the API limits export requests to 200,000. 
+As there is no template specified, it defaults to JSON, and the content is parsed to an r list. 
+
+# POST requests 
+A POST request can be used to send data to SQUIDLE+ API to create something new. 
+A key difference between a GET request and a POST request is that a POST request must contain a 'body' which is an object to describe what will be created in the API.
+
+## Example: Create SQUIDLE+ media collection
+```{r, include=TRUE, eval=FALSE}
+# Create POST body for new empty media collection, see SQUIDLE+ API documentation for details
+empty_post <- list(
+  "name" = "A unique name",
+  "description" = "A description of your media collection"
+)
+
+# POST request: create a new media collection in SQUIDLE+. Pass your created post body to the body argument in request().
+post <- request(
+  verb = "POST",
+  api = api,
+  endpoint = "api/media_collection",
+  body = empty_post
+)
+
+```
+The request verb is "POST" and the post body is passed to request() as an r list. The body is converted to JSON within the request() function.
+This will have created an empty media collection in SQUIDLE for the logged in user. You can verify this in the SQUIDLE+ web UI. 
+
+Next, we may want to populate this media collection with media
+```{r, include=TRUE, eval=FALSE}
+# Retrieve the unique id of the collection we just created by sending a GET request filtering for the media collection name
+f <- query_filter("name", "eq", "A unique name")
+get <- request("GET", api, "api/media_collection", query_filters = f)
+parsed <- parse_api(get)
+# Extract the id from the parsed response content
+media.id <- parsed$objects$id   
+```
+
+Now we know the id of the media collection we just created. Next, we need a list of the media keys that correspond to the media we want to populate our media collection with. 
+One way to do this is to query a known deployment name to get its unique deployment ID. With the deployment ID, you can send a request to the deployment export endpoint which returns media. 
+```{r, include=TRUE, eval=FALSE}
+# Send GET request to deployment endpoint and filter for deployment names that are ilike (case insensitive) "%IN2024_V04%"
+f <- query_filter("name", "ilike", "%IN2024_V04%")
+r <- request("GET", api, "api/deployment", f)
+p <- parse_api(r)
+# Extract the id from the parsed response content
+deployment.id <- unique(p$objects$id)  
+  # This will return a vector of unique deployment IDs. You could use these in a loop in the following code block, but it would be a lot of large requests.
+  ## For the sake of time saving in this vignette, we will continue with just one of these deployment ids
+  deployment.id <- 21947 
+```
+
+```{r, include=TRUE, eval=FALSE}
+# Send export request to deployment export endpoint to get the media for the specified deployment id
+e <- export(api = api, endpoint = paste("api/deployment", deployment.id, "export", sep = "/"))
+pars <- parse_api(e)
+
+# Extract unique media keys from parsed response content
+media.keys <- unique(pars$objects$key)
+```
+
+Great! now we have a list of media keys that correspond to images in SQUIDLE+ that we wish to add to our new media collection. 
+We can use this list and send another POST request to the media_collection endpoint, filtering by our media.id and with our media.keys as part of the post body.
+We need the jsonlite package for this.
+```{r, include=TRUE, eval=FALSE}
+library(jsonlite)
+# Build POST body for selected media keys
+post_json <- toJSON(list(filters = list(list(
+  name = "key",
+  op   = "in", 
+  val  = media.keys
+))), auto_unbox = TRUE)
+post_me <- list(q = post_json)
+
+# POST request: add selected media into the empty media collection
+media.post <- request(
+  verb = "POST",
+  api = api,
+  endpoint = paste(sep = "/", "api/media_collection", media.id, "media"),
+  body = post_me
+)
+```
+You will then be able to see your media items within your media collection in the SQUIDLE+ web UI.
+
+This next code chunk is just an example of what it may look like to loop though a vector of deployment ids. This chunk takes a very long time to run.
+```{r, include=TRUE, eval=FALSE}
+# This is what it could look like to loop through a vector of deployment ids
+# WARNING: THIS WOULD TAKE A LONG TIME
+e1 <- list()  # raw API responses
+p1 <- list()  # parsed responses
+o1 <- list()  # extracted media objects
+
+for (i in ids) {
+  key <- as.character(i)
+  e1[[key]] <- export(api = api,
+                      endpoint = paste("api/deployment", i, "export", sep = "/"))
+  p1[[key]] <- parse_api(e1[[key]])
+  o1[[key]] <- p1[[key]]$objects
+}
+```
+
