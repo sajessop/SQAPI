@@ -6,3 +6,5 @@
 .quarto
 testingnb.Rmd
 inst/doc
+/doc/
+/Meta/

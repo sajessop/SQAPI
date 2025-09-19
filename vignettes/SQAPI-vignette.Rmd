@@ -227,3 +227,82 @@ for (i in ids) {
 }
 ```
 
+# More Examples
+## Filtering by geom
+SQUIDLE+ API supports filtering by geometry columns which allows us to do things like getting all annotations within a polygon defined by latitude and longitude points.
+This example will walk through the steps to get all annotations from a polygon encompassing the bass strait.
+First we will define and plot a polygon over a base-map of Australia. 
+```{r, include=TRUE, eval=FALSE}
+library(dplyr)
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+ 
+# Define your polygon coordinates
+polygon_coords <- data.frame(
+  lon = c(145.0, 149.5, 149.5, 145.0, 145.0),
+  lat = c(-38.8, -38.8, -40.2, -40.2, -38.8)
+)
+ 
+# Convert to sf polygon
+polygon_sf <- st_sfc(st_polygon(list(as.matrix(polygon_coords))), crs = 4326)  # WGS84
+polygon_sf <- st_sf(geometry = polygon_sf)
+ 
+# Get Australia map
+australia <- ne_countries(scale = "medium",
+                          country = "Australia",
+                          returnclass = "sf")
+ 
+# Plot
+ggplot() +
+  geom_sf(data = australia,
+          fill = "lightblue",
+          color = "black") +
+  geom_sf(
+    data = polygon_sf,
+    fill = NA,
+    color = "red",
+    size = 1.2
+  ) +
+  coord_sf(xlim = c(140, 155), ylim = c(-42, -38)) +
+  theme_minimal() +
+  ggtitle("Polygon on Australia Map")
+```
+Next we will define the polygon in an r list, that matches the SQUIDLE+ API requirements for geom filters. 
+```{r, include=TRUE, eval=FALSE}
+polygon <- list(
+  list(lat = -38.8, lon = 145.0),
+  list(lat = -38.8, lon = 149.5),
+  list(lat = -40.2, lon = 149.5),
+  list(lat = -40.2, lon = 145.0),
+  list(lat = -38.8, lon = 145.0)
+)
+```
+Now we use this polygon to create a nested filter for getting all annotations that contain media with poses within our polygon.
+```{r, include=TRUE, eval=FALSE}
+f <- query_filter(
+  name = "point",
+  op = "has",
+  val = query_filter(
+    name = "media",
+    op = "has",
+    val = query_filter(
+      name = "poses",
+      op = "any",
+      val = query_filter(name = "geom", op = "geo_in_poly", val = polygon)
+    )
+  )
+)
+```
+And finally, send the request to the annotation export endpoint.
+```{r, include=TRUE, eval=FALSE}
+# Using the limit parameter to save time as it is otherwise a very large request
+params <- query_params(limit = 100)
+# Add another filter to filter for is_real_science
+another_filter <- query_filter("annotation_set", "has", query_filter("is_real_science", "eq", "TRUE"))
+# Send request
+r <- export(api = api, endpoint = "api/annotation/export", query_filters = list(f, another_filter), query_parameters = params)
+p <- parse_api(r)
+```
+

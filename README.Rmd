@@ -31,8 +31,8 @@ devtools::install_github("sajessop/SQAPI")
 
 ## Example
 
-These are a few basic examples which shows you how to build a url and send a request:
-
+These are a few basic examples which shows you how to build a URL and send a request:
+See Vignette: Introduction to SQAPI, for more comprehensive examples and explanation.
 ```{r example}
 if (interactive()) {
   library(SQAPI)
