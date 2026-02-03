@@ -4,10 +4,17 @@
 # SQAPI
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of SQAPI is to allow user friendly interaction with SQUIDLE+
-API through r.
+API through r.  
+
+To cite this package please use:  
+Jessop, S. A., Monk, J., & Friedman, A. (2026). sajessop/SQAPI: Initial
+Release (v1.0). Zenodo.
+<a href="https://doi.org/10.5281/zenodo.18462526\"
+class="uri">https://doi.org/10.5281/zenodo.18462526\</a>
 
 ## Installation
 
@@ -210,10 +217,8 @@ if (interactive()) {
   id <- parsed$objects$id
   
   # Now we want to populate the media collection with images from SQUIDLE
-  # Read in data file with list of media keys
-  df <- read.csv("dummy_media.csv")
-  # Collect unique keys from df
-  key_list <- df$point.media.key %>% unique()
+  # Collect unique keys from dummy_media
+  key_list <- dummy_media$point.media.key %>% unique()
   
   # Build post body
   post_json <- toJSON(list(filters = list(list(
