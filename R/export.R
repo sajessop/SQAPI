@@ -187,7 +187,7 @@ export <- function(api,
       (is.null(filename) ||
        !is.character(filename)))
     stop("`filename` must be provided and must be a character string if `write_disk = TRUE`.")
-  if (!grepl("export", endpoint, ignore.case = TRUE)) {
+  if (!grepl("export|tally", endpoint, ignore.case = TRUE)) {
     stop("This is NOT an export endpoint. Use SQAPI::request() for non export endpoints")
   }
   # Construct and print URL
