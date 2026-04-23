@@ -12,9 +12,7 @@ API through r.
 
 To cite this package please use:  
 Jessop, S. A., Monk, J., & Friedman, A. (2026). sajessop/SQAPI: Initial
-Release (v1.0). Zenodo.
-<a href="https://doi.org/10.5281/zenodo.18462526\"
-class="uri">https://doi.org/10.5281/zenodo.18462526\</a>
+Release (v1.0). Zenodo. <https://doi.org/10.5281/zenodo.18462526>
 
 ## Installation
 
@@ -28,8 +26,9 @@ devtools::install_github("sajessop/SQAPI")
 
 ## Example
 
-These are a few basic examples which shows you how to build a url and
-send a request:
+These are a few basic examples which shows you how to build a URL and
+send a request: See Vignette: Introduction to SQAPI, for more
+comprehensive examples and explanation.
 
 ``` r
 if (interactive()) {
