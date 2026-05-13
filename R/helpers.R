@@ -64,12 +64,15 @@ get_filetype <- function(response) {
 #' @param json The parsed JSON response from the initial export request.
 #' @param write_disk Logical; whether to write the result to disk.
 #' @param filename Filename to save the result if write_disk is TRUE.
+#' @param max_polls Integer; maximum number of polling attempts before timing out.
+#'   At 1-second intervals, the default of 600 allows up to 10 minutes per batch.
+#'   Set to \code{Inf} to disable the timeout.
 #'
 #' @return An httr::response object.
 #'
 #' @keywords internal
 #'
-poll_for_result <- function(api, json, write_disk, filename) {
+poll_for_result <- function(api, json, write_disk, filename, max_polls = 600) {
   # Retrieve auth and host from api
   token <- api$auth
   host <- api$host
@@ -85,7 +88,20 @@ poll_for_result <- function(api, json, write_disk, filename) {
   # Progress bar
   pbar <- utils::txtProgressBar(min = 0, max = 100, style = 3)
 
+  poll_count <- 0
+
   while (TRUE) {
+    # Check timeout
+    poll_count <- poll_count + 1
+    if (is.finite(max_polls) && poll_count > max_polls) {
+      close(pbar)
+      stop(
+        "Polling timed out after ", max_polls, " attempts (~",
+        round(max_polls / 60), " minutes). ",
+        "You can increase the limit via the `max_polls` argument."
+      )
+    }
+
     # Send GET request to status url
     status_response <- httr::GET(
       url = status_url,
@@ -142,5 +158,3 @@ poll_for_result <- function(api, json, write_disk, filename) {
   close(pbar)
   return(result_response)
 }
-
-
