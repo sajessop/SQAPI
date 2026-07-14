@@ -58,6 +58,10 @@ make_export_request <- function(url,
 #' @param filename A character string specifying the output filename (required if \code{write_disk = TRUE}).
 #' @param metadata_filename A character string specifying the name of the file to save metadata headers to.
 #' Only used if a CSV is being downloaded. Defaults to \code{"metadata.json"}.
+#' @param max_polls Numeric; maximum number of polling attempts before timing
+#'   out. Polling occurs approximately once per second, so the default of
+#'   \code{600} allows about 10 minutes. Set to \code{Inf} to disable the
+#'   timeout.
 #'
 #' @return
 #' If \code{poll = TRUE}, returns the final \code{httr::response} from the result url after polling the status url.
@@ -176,7 +180,8 @@ export <- function(api,
                    poll = TRUE,
                    write_disk = FALSE,
                    filename = NULL,
-                   metadata_filename = "metadata.json") {
+                   metadata_filename = "metadata.json",
+                   max_polls = 600) {
 
   # Validate input types
   if (!inherits(api, "SQAPI"))
@@ -189,6 +194,12 @@ export <- function(api,
     stop("`filename` must be provided and must be a character string if `write_disk = TRUE`.")
   if (!grepl("export|tally", endpoint, ignore.case = TRUE)) {
     stop("This is NOT an export endpoint. Use SQAPI::request() for non export endpoints")
+  }
+  if (!is.numeric(max_polls) ||
+      length(max_polls) != 1L ||
+      is.na(max_polls) ||
+      max_polls <= 0) {
+    stop("`max_polls` must be a single positive number or `Inf`.")
   }
   # Construct and print URL
   url <- append_url(
@@ -224,7 +235,7 @@ export <- function(api,
   # else, continue with polling logic
   else {
     # Call polling helper function
-    ret_results <- poll_for_result(api = api, json = json, write_disk = write_disk, filename = filename)
+    ret_results <- poll_for_result(api = api, json = json, write_disk = write_disk, filename = filename, max_polls = max_polls)
   }
 
   # Handle metadata if it's a CSV file

@@ -4,7 +4,7 @@
 \alias{poll_for_result}
 \title{Helper for Status polling logic for SQUIDLE export}
 \usage{
-poll_for_result(api, json, write_disk, filename)
+poll_for_result(api, json, write_disk, filename, max_polls = 600)
 }
 \arguments{
 \item{api}{An instance of \code{SQAPI}, containing properties \code{"host"} and \code{"auth"}.}
@@ -14,6 +14,10 @@ poll_for_result(api, json, write_disk, filename)
 \item{write_disk}{Logical; whether to write the result to disk.}
 
 \item{filename}{Filename to save the result if write_disk is TRUE.}
+
+\item{max_polls}{Integer; maximum number of polling attempts before timing out.
+At 1-second intervals, the default of 600 allows up to 10 minutes per batch.
+Set to \code{Inf} to disable the timeout.}
 }
 \value{
 An httr::response object.

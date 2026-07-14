@@ -16,7 +16,8 @@ export(
   poll = TRUE,
   write_disk = FALSE,
   filename = NULL,
-  metadata_filename = "metadata.json"
+  metadata_filename = "metadata.json",
+  max_polls = 600
 )
 }
 \arguments{
@@ -53,6 +54,11 @@ See SQUIDLE API documentation for details on template and disposition.}
 
 \item{metadata_filename}{A character string specifying the name of the file to save metadata headers to.
 Only used if a CSV is being downloaded. Defaults to \code{"metadata.json"}.}
+
+\item{max_polls}{Numeric; maximum number of polling attempts before timing
+out. Polling occurs approximately once per second, so the default of
+\code{600} allows about 10 minutes. Set to \code{Inf} to disable the
+timeout.}
 }
 \value{
 If \code{poll = TRUE}, returns the final \code{httr::response} from the result url after polling the status url.
