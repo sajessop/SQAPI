@@ -59,9 +59,9 @@ make_export_request <- function(url,
 #' @param metadata_filename A character string specifying the name of the file to save metadata headers to.
 #' Only used if a CSV is being downloaded. Defaults to \code{"metadata.json"}.
 #' @param max_polls Numeric; maximum number of polling attempts before timing
-#'   out. Polling occurs approximately once per second, so the default of
-#'   \code{600} allows about 10 minutes. Set to \code{Inf} to disable the
-#'   timeout.
+#' out. Polling occurs approximately once per second, so the default of
+#' \code{600} allows about 10 minutes. Set to \code{Inf} to disable the
+#' timeout.
 #'
 #' @return
 #' If \code{poll = TRUE}, returns the final \code{httr::response} from the result url after polling the status url.
