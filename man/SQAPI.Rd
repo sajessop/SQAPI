@@ -8,62 +8,65 @@ Class SQAPI has a host and auth. Designed to be passes to the \code{api}
 field throughout SQAPI functions to handle API authentication.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{host}}{Host url - defaults to "https://squidle.org".}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{host}}{Host url - defaults to "https://squidle.org".}
 
-\item{\code{auth}}{Authentication for SQUIDLE API account (your API token).
+    \item{\code{auth}}{Authentication for SQUIDLE API account (your API token).
 Will prompt for token interactively if NULL}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-SQAPI-new}{\code{SQAPI$new()}}
-\item \href{#method-SQAPI-clone}{\code{SQAPI$clone()}}
-}
+  \itemize{
+    \item \href{#method-SQAPI-initialize}{\code{SQAPI$new()}}
+    \item \href{#method-SQAPI-clone}{\code{SQAPI$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SQAPI-new"></a>}}
-\if{latex}{\out{\hypertarget{method-SQAPI-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new instance of SQAPI that has a host and auth. Assign it a
+\if{html}{\out{<a id="method-SQAPI-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-SQAPI-initialize}{}}}
+\subsection{\code{SQAPI$new()}}{
+  Creates a new instance of SQAPI that has a host and auth. Assign it a
 variable name and pass it to the \code{api} field in SQAPI functions such
 as \code{export} and \code{request}. This will handle authentication
 of all request to SQUIDLE API in an "r" session.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SQAPI$new(host = NULL, auth = NULL)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SQAPI$new(host = NULL, auth = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{host}}{Host url - defaults to "https://squidle.org".}
+      \item{\code{auth}}{Your SQUIDLE API token.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new \code{SQAPI} object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{host}}{Host url - defaults to "https://squidle.org".}
-
-\item{\code{auth}}{Your SQUIDLE API token.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new \code{SQAPI} object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SQAPI-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-SQAPI-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SQAPI$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{SQAPI$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{SQAPI$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

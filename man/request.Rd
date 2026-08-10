@@ -54,7 +54,7 @@ Constructs the request URL with query filters and query parameters directly from
 and \code{SQAPI::query_params}. Also includes authentication headers.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 
 # Example 1: Full GET request example
   # Create instance of SQAPI

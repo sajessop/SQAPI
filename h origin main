@@ -1,0 +1,25 @@
+* [33m3eb9467[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m new functions
+* [33mee3fa98[m new scaling function
+[31m|[m * [33mae97eda[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #1 from sajessop/main
+[31m|[m[31m/[m[33m|[m 
+[31m|[m * [33m32d6c26[m Merge pull request #1 from jacquomo/patch-1
+[31m|[m[31m/[m[35m|[m 
+[31m|[m * [33m112ef41[m[33m ([m[1;31morigin/patch-1[m[33m)[m Update helpers.R
+[31m|[m[31m/[m  
+* [33m5e62984[m doi fix
+* [33m7574a70[m doi fix
+* [33mb91c93e[m minor bug fix. allow tally endpoints for export()
+*   [33m1d76d52[m Merge branch 'main' of https://github.com/sajessop/SQAPI
+[36m|[m[1;31m\[m  
+[36m|[m * [33mb2593d2[m format
+[36m|[m * [33m68a14d1[m Minor format
+[36m|[m * [33m8f5b3c4[m added doi
+* [1;31m|[m [33m765604a[m updated vignette
+[1;31m|[m[1;31m/[m  
+* [33m9844f17[m[33m ([m[1;33mtag: [m[1;33mv1.0[m[33m)[m Vignette expanted
+* [33mb907205[m started vignette
+* [33m76c3810[m dummy_media data documented
+* [33m2103b8f[m dummy_media data added
+* [33m53aa228[m POST workflow addded to readme
+* [33m3d0f631[m readme and transform
+* [33mabb42e4[m updated readme

@@ -82,7 +82,7 @@ metadata can be saved separately. If a CSV file is exported, relevant metadata f
 will be extracted and saved.
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 
 # Example 1 - Export data as .csv with metadata
    # Create instance of SQAPI
